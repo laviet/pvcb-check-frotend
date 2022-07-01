@@ -41,27 +41,26 @@
             <el-row :gutter="20">
               <el-col :span="12">
                 <el-form-item label="Họ và tên người thụ hưởng" prop="fullName">
-                  <el-input v-model.number="inputForm.inputData1.fullName"
-                    placeholder="Nhập họ và tên người thụ hưởng" />
+                  <el-input v-model="inputForm.inputData1.fullName" placeholder="Nhập họ và tên người thụ hưởng" />
                 </el-form-item>
                 <el-form-item label="Số Tài khoản/ số IBAN thụ hưởng" prop="accountNumber">
-                  <el-input v-model.number="inputForm.inputData1.accountNumber"
+                  <el-input v-model="inputForm.inputData1.accountNumber"
                     placeholder="Nhập số Tài khoản/ số IBAN thụ hưởng" />
                 </el-form-item>
                 <el-form-item label="Mã Ngân hàng" prop="bankCode">
-                  <el-input v-model.number="inputForm.inputData1.bankCode" placeholder="Nhập mã Ngân hàng" />
+                  <el-input v-model="inputForm.inputData1.bankCode" placeholder="Nhập mã Ngân hàng" />
                 </el-form-item>
               </el-col>
 
               <el-col :span="12">
                 <el-form-item label="Địa chỉ" prop="address">
-                  <el-input v-model.number="inputForm.inputData1.address" placeholder="Nhập địa chỉ" />
+                  <el-input v-model="inputForm.inputData1.address" placeholder="Nhập địa chỉ" />
                 </el-form-item>
                 <el-form-item label="Tên Ngân hàng thụ hưởng" prop="bankName">
-                  <el-input v-model.number="inputForm.inputData1.bankName" placeholder="Nhập tên Ngân hàng thụ hưởng" />
+                  <el-input v-model="inputForm.inputData1.bankName" placeholder="Nhập tên Ngân hàng thụ hưởng" />
                 </el-form-item>
                 <el-form-item label="Email liên hệ (nếu có)" prop="email">
-                  <el-input v-model.number="inputForm.inputData1.email" placeholder="Nhập email liên hệ" />
+                  <el-input v-model="inputForm.inputData1.email" placeholder="Nhập email liên hệ" />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -91,10 +90,10 @@
             <el-row :gutter="20">
               <el-col :span="12">
                 <el-form-item label="Họ và tên du học sinh" prop="fullName">
-                  <el-input v-model.number="inputForm.inputData2.fullName" placeholder="Nhập họ và tên du học sinh" />
+                  <el-input v-model="inputForm.inputData2.fullName" placeholder="Nhập họ và tên du học sinh" />
                 </el-form-item>
                 <el-form-item label="Số điện thoại liên hệ" prop="phone">
-                  <el-input v-model.number="inputForm.inputData2.phone" placeholder="Nhập số điện thoại liên hệ" />
+                  <el-input v-model="inputForm.inputData2.phone" placeholder="Nhập số điện thoại liên hệ" />
                 </el-form-item>
                 <el-form-item label="Ngày hết hạn Visa" prop="visaExpire">
                   <el-date-picker style="width: 100%" v-model="inputForm.inputData2.visaExpire" type="date"
@@ -104,14 +103,13 @@
 
               <el-col :span="12">
                 <el-form-item label="Địa chỉ" prop="address">
-                  <el-input v-model.number="inputForm.inputData2.address" placeholder="Nhập địa chỉ" />
+                  <el-input v-model="inputForm.inputData2.address" placeholder="Nhập địa chỉ" />
                 </el-form-item>
-                <el-form-item label="Số CMND/HC/CCCD" prop="identifyNumber">
-                  <el-input v-model.number="inputForm.inputData2.identifyNumber"
-                    placeholder="Nhập tên Ngân hàng thụ hưởng" />
+                <el-form-item label="Số CMND/CCCD/HC" prop="identifyNumber">
+                  <el-input v-model="inputForm.inputData2.identifyNumber" placeholder="Nhập tên Ngân hàng thụ hưởng" />
                 </el-form-item>
                 <el-form-item label="Email liên hệ (nếu có)" prop="email">
-                  <el-input v-model.number="inputForm.inputData2.email" placeholder="Nhập email liên hệ" />
+                  <el-input v-model="inputForm.inputData2.email" placeholder="Nhập email liên hệ" />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -144,13 +142,17 @@
             <el-row :gutter="20">
               <el-col :span="12">
                 <el-form-item label="Họ và tên nhân thân" prop="fullName">
-                  <el-input v-model.number="inputForm.inputData3.fullName" placeholder="Nhập họ và tên du học sinh" />
+                  <el-input v-model="inputForm.inputData3.fullName" placeholder="Nhập họ và tên du học sinh" />
                 </el-form-item>
                 <el-form-item label="Số điện thoại liên hệ" prop="phone">
-                  <el-input v-model.number="inputForm.inputData3.phone" placeholder="Nhập số điện thoại liên hệ" />
+                  <el-input v-model="inputForm.inputData3.phone" placeholder="Nhập số điện thoại liên hệ" />
                 </el-form-item>
-                <el-form-item label="Tên loại giấy tờ chứng minh quan hệ nhân thân" prop="visaExpire">
-                  <el-input v-model.number="inputForm.inputData3.paperName" />
+                <el-form-item label="Ngày cấp" prop="dateRelease">
+                  <el-date-picker style="width: 100%" v-model="inputForm.inputData3.dateRelease" type="date"
+                    placeholder="Chọn ngày cấp" />
+                </el-form-item>
+                <el-form-item label="Email liên hệ (nếu có)" prop="email">
+                  <el-input v-model="inputForm.inputData3.email" placeholder="Nhập email liên hệ" />
                 </el-form-item>
               </el-col>
 
@@ -158,11 +160,11 @@
                 <el-form-item label="Địa chỉ" prop="address">
                   <el-input v-model="inputForm.inputData3.address" placeholder="Nhập địa chỉ" />
                 </el-form-item>
-                <el-form-item label="Số CMND/HC/CCCD" prop="identifyNumber">
+                <el-form-item label="Số CMND/CCCD/HC" prop="identifyNumber">
                   <el-input v-model="inputForm.inputData3.identifyNumber" placeholder="Nhập tên Ngân hàng thụ hưởng" />
                 </el-form-item>
-                <el-form-item label="Email liên hệ (nếu có)" prop="email">
-                  <el-input v-model="inputForm.inputData3.email" placeholder="Nhập email liên hệ" />
+                <el-form-item label="Nơi cấp" prop="addressRelease">
+                  <el-input v-model="inputForm.inputData3.addressRelease" placeholder="Nhập nơi cấp" />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -189,9 +191,30 @@
               <div class="el-upload__tip">Hỗ trợ jpg, jpeg, tif, pdf</div>
             </template>
           </el-upload>
+          <el-form ref="formRef4" :model="inputForm.inputData3" :rules="rulesData3" label-width="140px"
+            class="demo-ruleForm" label-position="top">
+            <el-row :gutter="20">
+              <el-col :span="12">
+                <el-form-item label="Tên loại giấy tờ chứng minh quan hệ thân nhân" prop="fullName">
+                  <el-input v-model="inputForm.inputData4.abc" placeholder="Nhập tên loại giấy tờ" />
+                </el-form-item>
+              </el-col>
+
+              <el-col :span="12">
+                <el-form-item label="Quan hệ giữa người chuyển và người thụ hưởng " prop="address">
+                  <el-select style="width: 100%" v-model="inputForm.inputData4.def" placeholder="Vui lòng chọn">
+                    <el-option label="Bố mẹ đẻ/Bố mẹ nuôi/Bố dượng/Mẹ kế" value="a" />
+                    <el-option label="Vợ/Chồng" value="b" />
+                    <el-option label="Con đẻ/Con nuôi" value="c" />
+                    <el-option label="Anh/Chị/Em ruột" value="d" />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-form>
           <div style="float: right">
             <el-button type="primary" @click="backVerticalMethod">Quay lại</el-button>
-            <el-button type="primary" @click="checkContinueStepMethod()">Tiếp tục</el-button>
+            <el-button type="primary" @click="checkContinueStepMethod(formRef4)">Tiếp tục</el-button>
           </div>
         </div>
       </el-steps>
@@ -302,6 +325,7 @@ import type { UploadProps, UploadUserFile } from "element-plus";
 const formRef1 = ref<FormInstance>();
 const formRef2 = ref<FormInstance>();
 const formRef3 = ref<FormInstance>();
+const formRef4 = ref<FormInstance>();
 const formRef21 = ref<FormInstance>();
 const inputForm = reactive({
   inputData1: {
@@ -327,6 +351,12 @@ const inputForm = reactive({
     identifyNumber: "",
     paperName: "",
     email: "",
+    dateRelease:"",
+    addressRelease:""
+  },
+  inputData4: {
+    abc: "",
+    def: "",
   },
   inputData21: {
     verifyCode: "",
@@ -509,7 +539,8 @@ const submitForm4 = () => {
   countDownTimer();
 };
 const dialogVisible = ref(false);
-function checkContinueStepMethod() {
+function checkContinueStepMethod(formEl: FormInstance | undefined) {
+  console.log(formEl)
   dialogVisible.value = true;
   confirmRadio.value = false;
 }

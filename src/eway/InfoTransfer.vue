@@ -11,7 +11,7 @@
       <el-step title="Nguồn tiền chuyển" />
     </el-steps> -->
     <!-- <div v-if="active == 0"> -->
-    <h3 style="text-align: center">Đăng kí thông tin chuyển tiền</h3>
+    <h3 style="text-align: center">Đăng ký thông tin chuyển tiền</h3>
     <el-form ref="formRef" :model="inputForm" :rules="rulesData" label-width="140px" class="demo-ruleForm"
       label-position="top">
       <el-row :gutter="20">
@@ -28,7 +28,7 @@
           </el-form-item>
           <el-form-item label="Nhập số tiền muốn chuyển" prop="money">
             <!-- <ElCurrencyInput  v-model="inputForm.money" :options="{ currency: 'USD' }" /> -->
-            <el-input v-model.number="inputForm.money" />
+            <el-input type="number" v-model="inputForm.money" />
           </el-form-item>
           <el-form-item label="Số tài khoản" prop="accountNumber">
             <el-select v-model="inputForm.accountNumber" placeholder="Chọn số tài khoản" style="width: 100%"
@@ -70,7 +70,7 @@
               <el-option v-for="item in  moneyTypeList" :key="item.name" :label="item.label" :value="item.name" />
             </el-select>
           </el-form-item>
-          <el-form-item label="Tỉ giá ngoại tệ" prop="rate">
+          <el-form-item label="Tỷ giá ngoại tệ" prop="rate">
             <!-- <el-input v-model.number="inputForm.rate" readonly autocomplete="off" /> -->
             <span>{{ formatterCurrency.format(inputForm.rate) }}</span>
           </el-form-item>
@@ -98,10 +98,10 @@
 
       <br />
       <div>
-        <div>
+        <!-- <div>
           Tôi xác nhận đã đọc kỹ và hiểu rõ các nội dung nêu trên và tôi cam kết
           tuân thủ theo đúng các điều kiện đã cam kết với PVcomBank.
-        </div>
+        </div> -->
         <div style="text-align: center"><b>Hồ sơ cần chuẩn bị</b></div>
 
         <div style="margin: 0 auto; width: 600px; font-size: 12px">
@@ -271,7 +271,7 @@ const rulesData = reactive<FormRules>({
   bankType: [{ required: true, message: "Thông tin không được để trống" }],
   money: [
     { required: true, message: "Thông tin không được để trống" },
-    { type: "number", message: "Vui lòng nhập số" },
+    // { type: "number", message: "Vui lòng nhập số" },
   ],
   accountNumber: [{ required: true, message: "Thông tin không được để trống" }],
   targetTransfer: [
@@ -290,20 +290,23 @@ const submitForm = (formEl: FormInstance | undefined) => {
   formEl.validate((valid) => {
     if (valid) {
       checkBeforceInput();
-      httpbe.post("/fund-transfer/initial", inputForm).then((resp) => {
-        console.log("vao roi: " + resp.data.message)
-        router.push({
-          name: "infoMainName",
-          params: { targetTransferSelect: inputForm.targetTransfer, objectTransferSelect: inputForm.objectTransfer }
-        });
-      }).catch(err => {
-        alert(err.data.message)
-        throw null;
-        //     ElMessage.error({
-        //   message: err.response,
-        // });
-      })
-
+      router.push({
+        name: "infoMainName",
+        params: { targetTransferSelect: inputForm.targetTransfer, objectTransferSelect: inputForm.objectTransfer }
+      });
+      // httpbe.post("/fund-transfer/initial", inputForm).then((resp) => {
+      //   console.log("vao roi: " + resp.data.message)
+      //   router.push({
+      //     name: "infoMainName",
+      //     params: { targetTransferSelect: inputForm.targetTransfer, objectTransferSelect: inputForm.objectTransfer }
+      //   });
+      // }).catch(err => {
+      //   alert(err.data.message)
+      //   throw null;
+      //   //     ElMessage.error({
+      //   //   message: err.response,
+      //   // });
+      // })
     }
   });
 };
@@ -538,26 +541,12 @@ const mylll = ref([{
   label: "",
 }])
 
-function getExchangeRateIntial() {
-  httpbe.get("/exchange-rate").then((resp) => {
-    // mylll.value = resp.data.payload[0];
-    // mylll.value = resp.data.payload;
-  });
-  // myList=[
-  //   {
-  //     label: "JPY",
-  //     name: "JPY2",
-  //     value: 172
-  //   },
-  // ]
-  // mylll.value=[
-  //   {
-  //     label: "JPY",
-  //     name: "JPY2",
-  //     value: 172
-  //   },
-  // ]
-}
+// function getExchangeRateIntial() {
+//   httpbe.get("/exchange-rate").then((resp) => {
+//     mylll.value = resp.data.payload[0];
+//     mylll.value = resp.data.payload;
+//   });
+// }
 
 
 
