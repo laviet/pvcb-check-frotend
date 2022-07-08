@@ -42,7 +42,7 @@
               <el-option label="Người thụ hưởng" value="recieveType" :disabled="inputForm.externalFees == 'sendType'" />
             </el-select>
           </el-form-item>
-          <el-form-item label="Chi phí" prop="moneyShow">
+          <el-form-item label="Tổng chi phí quy đổi" prop="moneyShow">
             <!-- <el-input v-model.number="inputForm.moneyShow" readonly autocomplete="off">
               <template #append>VND</template>
             </el-input> -->

@@ -95,9 +95,11 @@
                 <el-form-item label="Số điện thoại liên hệ" prop="phone">
                   <el-input v-model="inputForm.inputData2.phone" placeholder="Nhập số điện thoại liên hệ" />
                 </el-form-item>
-                <el-form-item label="Ngày hết hạn Visa" prop="visaExpire">
-                  <el-date-picker style="width: 100%" v-model="inputForm.inputData2.visaExpire" type="date"
-                    placeholder="Chọn ngày hết hạn Visa" />
+                <el-form-item label="Số Visa" prop="visa">
+                  <el-input v-model="inputForm.inputData2.visa" placeholder="Nhập số visa" />
+                </el-form-item>
+                <el-form-item label="Email liên hệ (nếu có)" prop="email">
+                  <el-input v-model="inputForm.inputData2.email" placeholder="Nhập email liên hệ" />
                 </el-form-item>
               </el-col>
 
@@ -105,11 +107,13 @@
                 <el-form-item label="Địa chỉ" prop="address">
                   <el-input v-model="inputForm.inputData2.address" placeholder="Nhập địa chỉ" />
                 </el-form-item>
-                <el-form-item label="Số CMND/CCCD/HC" prop="identifyNumber">
-                  <el-input v-model="inputForm.inputData2.identifyNumber" placeholder="Nhập tên Ngân hàng thụ hưởng" />
+                <el-form-item label="Số hộ chiếu" prop="identifyNumber">
+                  <el-input v-model="inputForm.inputData2.identifyNumber" placeholder="Nhập số hộ chiếu" />
                 </el-form-item>
-                <el-form-item label="Email liên hệ (nếu có)" prop="email">
-                  <el-input v-model="inputForm.inputData2.email" placeholder="Nhập email liên hệ" />
+
+                <el-form-item label="Ngày hết hạn Visa" prop="visaExpire">
+                  <el-date-picker style="width: 100%" v-model="inputForm.inputData2.visaExpire" type="date"
+                    placeholder="Chọn ngày hết hạn Visa" />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -142,7 +146,7 @@
             <el-row :gutter="20">
               <el-col :span="12">
                 <el-form-item label="Họ và tên nhân thân" prop="fullName">
-                  <el-input v-model="inputForm.inputData3.fullName" placeholder="Nhập họ và tên du học sinh" />
+                  <el-input v-model="inputForm.inputData3.fullName" placeholder="Nhập họ và tên người chuyển tiền" />
                 </el-form-item>
                 <el-form-item label="Số điện thoại liên hệ" prop="phone">
                   <el-input v-model="inputForm.inputData3.phone" placeholder="Nhập số điện thoại liên hệ" />
@@ -161,7 +165,7 @@
                   <el-input v-model="inputForm.inputData3.address" placeholder="Nhập địa chỉ" />
                 </el-form-item>
                 <el-form-item label="Số CMND/CCCD/HC" prop="identifyNumber">
-                  <el-input v-model="inputForm.inputData3.identifyNumber" placeholder="Nhập tên Ngân hàng thụ hưởng" />
+                  <el-input v-model="inputForm.inputData3.identifyNumber" placeholder="Nhập số CMND/CCCD/HC" />
                 </el-form-item>
                 <el-form-item label="Nơi cấp" prop="addressRelease">
                   <el-input v-model="inputForm.inputData3.addressRelease" placeholder="Nhập nơi cấp" />
@@ -275,15 +279,15 @@
         </div>
         <br />
         <div>
-          <a href="https://google.com">Kích vào đây để tải “Đăng ký chuyển tiền đi quốc tế”.</a>
+          Kích vào đây để tải: <a target="_blank" href="https://google.com">"Hợp đồng mua bán ngoại tệ, Đăng ký kiêm
+            điều khoản, điều kiện dịch vụ chuyển tiền đi quốc tế"</a>
         </div>
         <br />
         <div>
           Số tiền đăng ký giao dịch nêu trên sẽ được tạm giữ để chờ duyệt giao
           dịch.<br /><br />
-          Sau thời gian trên, Quý khách vẫn chưa nhận được thông báo hoàn thành
-          giao dịch hoặc cần hỗ trợ về dịch vụ, vui lòng liên hệ
-          ......................... để được giải đáp và hỗ trợ.<br /><br />
+          Sau thời gian trên, Quý khách vẫn chưa nhận được thông báo hoàn thành giao dịch hoặc cần hỗ trợ về dịch vụ,
+          vui lòng liên hệ hotline của PVcomBank 1900555592 để được giải đáp và hỗ trợ.<br /><br />
           Vui lòng chọn “HOÀN THÀNH” và trải nghiệm các dịch vụ khác của Eway.
         </div>
         <br />
@@ -302,9 +306,8 @@
     </div>
     <br />
     <div>
-      <el-radio v-model="confirmRadio" label="true">Tôi xác nhận đã đọc kỹ và hiểu rõ các nội dung nêu trên và tôi cam
-        kết
-        tuân thủ theo đúng các điều kiện đã cam kết với PVcomBank.</el-radio>
+      <el-radio v-model="confirmRadio" label="true">Tôi xác nhận đã đọc hiểu, chấp nhận và cam kết tuân thủ theo đúng
+        các điều kiện & điều khoản đã cam kết với PVcomBank</el-radio>
     </div>
 
     <template #footer>
@@ -342,6 +345,7 @@ const inputForm = reactive({
     phone: "",
     identifyNumber: "",
     visaExpire: "",
+    visa: "",
     email: "",
   },
   inputData3: {
@@ -351,8 +355,8 @@ const inputForm = reactive({
     identifyNumber: "",
     paperName: "",
     email: "",
-    dateRelease:"",
-    addressRelease:""
+    dateRelease: "",
+    addressRelease: ""
   },
   inputData4: {
     abc: "",

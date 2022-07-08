@@ -25,6 +25,11 @@
         <span class="color-yellow"> (Androi - iOS)</span> trên điện thoại hoặc
         máy tính bảng của bạn.
       </div>
+      <div>
+        Android <qrcode-vue :value="android" :size="size" level="H" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        Ios <qrcode-vue :value="ios" :size="size" level="H" />
+      </div>
       <br />
       <b style="margin-right: 20px">Bước 2</b>
       <span> Chọn 1 trong 2 cách sau:</span>
@@ -42,7 +47,8 @@
             hình, và thực hiện quét QR Code bằng camera.
           </div>
           <div style="text-align: center">
-            <img style="width: 200px" src="@/assets/qacode.png" />
+          <qrcode-vue :value="value" :size="size" level="H" />
+            <!-- <img style="width: 200px" src="@/assets/qacode.png" /> -->
           </div>
         </el-col>
         <el-col :span="12" style="border-left: 1px solid #c4c4c4">
@@ -66,7 +72,7 @@
             <el-input size="large" v-model="QACode">
               <template #append>
                 <el-button @click="copyMethod()"
-                  ><span class="color-yellow">SAO CHÉP</span></el-button
+                  ><span class="color-yellow">COPY</span></el-button
                 >
               </template>
             </el-input>
@@ -84,9 +90,16 @@
 </template>
 
 <script lang="ts" setup>
+import { ref } from "vue";
 import router from "@/router";
 import { ElMessage } from "element-plus";
-const QACode = "04GA24EW23";
+import QrcodeVue from 'qrcode.vue'
+const android=ref('https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2')
+const ios=ref('https://apps.apple.com/app/google-authenticator/id388497605')
+const value=ref('otpauth://totp/PVcombank?secret=EP7G7EVHLGNC2AS3B57LT3X34OHH3URL')
+const QACode = "EP7G7EVHLGNC2AS3B57LT3X34OHH3URL";
+const size=ref(150)
+
 const copyMethod = () => {
   navigator.clipboard.writeText(QACode);
   ElMessage({
