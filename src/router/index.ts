@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import LayoutEway from '@/layout/IndexEway.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -37,6 +38,22 @@ const routes: Array<RouteRecordRaw> = [
         path: 'info',
         name: "infoMainName",
         component: () => import('@/eway/InfoMain.vue'),
+      }
+    ],
+  },
+  {
+    path: "/check",
+    component: LayoutEway,
+    children: [
+      {
+        path: 'list',
+        name: "listCheckName",
+        component: () => import('@/check/DataMain.vue')
+      },
+      {
+        path: 'detail/:id',
+        name: "detailCheckName",
+        component: () => import('@/check/DataDetail.vue')
       }
     ],
   },
