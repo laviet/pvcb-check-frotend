@@ -36,10 +36,71 @@
         <span style="float: right"></span>
     </div>
     <el-table :data="tableData" :row-class-name="tableRowClassName">
-        <el-table-column prop="date" label="Date" width="180" />
-        <el-table-column prop="name" label="Name" width="180" />
-        <el-table-column prop="address" label="Address" />
-        <el-table-column fixed="right" label="Operations" width="120">
+        <el-table-column width="200">
+            <template #header>
+                <div>MÃ YÊU CẦU</div>
+                <div>Tên khách hàng</div>
+                <div style="font-weight: normal">Mục đích chuyển tiền</div>
+            </template>
+            <template #default="scope">
+                <span>{{ scope.row.date }}</span>
+            </template>
+        </el-table-column>
+        <el-table-column width="180">
+            <template #header>
+                <div>Số CIF</div>
+                <div style="font-weight: normal">Số TKTT</div>
+            </template>
+            <template #default="scope">
+                <span>{{ scope.row.name }}</span>
+            </template>
+        </el-table-column>
+        <el-table-column>
+            <template #header>
+                <div>SỐ ĐIỆN THOẠI</div>
+                <div style="font-weight: normal">Email</div>
+            </template>
+            <template #default="scope">
+                <span>{{ scope.row.name }}</span>
+            </template>
+        </el-table-column>
+        <el-table-column>
+            <template #header>
+                <div>SỐ TIỀN CHUYỂN</div>
+                <div style="font-weight: normal">Quy đổi VNĐ</div>
+            </template>
+            <template #default="scope">
+                <span>{{ scope.row.name }}</span>
+            </template>
+        </el-table-column>
+        <el-table-column>
+            <template #header>
+                <div>HỒ SƠ ĐÃ NỘP</div>
+            </template>
+            <template #default="scope">
+                <span>{{ scope.row.name }}</span>
+            </template>
+        </el-table-column>
+        <el-table-column>
+            <template #header>
+                <div>THÔNG TIN HẬU KIỂM</div>
+            </template>
+            <template #default="scope">
+                <span>{{ scope.row.name }}</span>
+            </template>
+        </el-table-column>
+        <el-table-column prop="date" label="USER
+            HẬU KIỂM">
+        </el-table-column>
+        <el-table-column>
+            <template #header>
+                <div>TÌNH TRẠNG GIAO DỊCH</div>
+            </template>
+            <template #default="scope">
+                <span>{{ scope.row.name }}</span>
+            </template>
+        </el-table-column>
+        <el-table-column label="Thao tác" fixed="right" width="120">
             <template #default="scope">
                 <el-button link type="primary" size="small" @click="handleClick(scope.row.id)">Chi tiết</el-button>
             </template>
@@ -182,10 +243,14 @@ const sortList = [
 // }
 .el-table .warning-row {
     --el-table-tr-bg-color: var(--el-color-warning-light-9);
-    background: green
+    // background: green
 }
 
 .el-table .success-row {
     --el-table-tr-bg-color: var(--el-color-success-light-9);
+}
+
+.el-table .cell {
+    text-align: center
 }
 </style>

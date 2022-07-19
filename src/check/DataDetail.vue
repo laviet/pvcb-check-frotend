@@ -13,78 +13,173 @@
             </div>
         </el-col>
     </el-row>
-    <span v-if="radioModel=='a'">
-    <el-row :gutter="20">
-        <el-col :span="15">
-        </el-col>
-        <el-col :span="9">
-            <div style="text-align: center; font-weight: bold">Dành cho nhân viên hậu kiểm</div>
-            <el-radio-group v-model="inputForm.check" class="ml-4">
-                <el-radio label="1">Đúng, chính xác, hợp lệ</el-radio>
-                <el-radio label="2">Không đúng, không hợp lệ, chưa chính xác</el-radio>
-            </el-radio-group>
-            <h4>1. Kiểm tra định dạng các hồ sơ</h4>
-            <div>
-                <el-switch v-model="inputForm.hasStatus1" /> &nbsp;
-                <span>HS chứng minh học phí</span>
-            </div>
-            <div>
-                <el-switch v-model="inputForm.hasStatus2" /> &nbsp;
-                <span>HS chứng minh sinh hoạt phí</span>
-            </div>
-            <div>
-                <el-switch v-model="inputForm.hasStatus3" /> &nbsp;
-                <span>Hộ chiếu (Passport)</span>
-            </div>
-            <div>
-                <el-switch v-model="inputForm.hasStatus4" /> &nbsp;
-                <span>Thị thực (Visa)</span>
-            </div>
-            <div>
-                <el-switch v-model="inputForm.hasStatus5" /> &nbsp;
-                <span>Chứng minh nhân thân</span>
-            </div>
-            <br />
-            <div style="text-align: center">Ghi chú</div>
-            <hr />
-            <!-- this is two -->
-            <h4>2. Kiểm tra thông tin quan trọng của các hồ sơ</h4>
-            <div>
-                <el-switch v-model="inputForm.checkStatus1" /> &nbsp;
-                <span>HS chứng minh học phí đúng thời gian thực tế không?</span>
-            </div>
-            <div>
-                <el-switch v-model="inputForm.checkStatus2" /> &nbsp;
-                <span>Hộ chiếu còn hiệu lực không?</span>
-            </div>
-            <div>
-                <el-switch v-model="inputForm.checkStatus3" /> &nbsp;
-                <span>Thị thực còn hiệu lực không?</span>
-            </div>
-            <div>
-                <el-switch v-model="inputForm.checkStatus4" /> &nbsp;
-                <span>Quốc gia trên HS học phí và trên thị thực có khớp nhau không?</span>
-            </div>
-            <div>
-                <el-switch v-model="inputForm.checkStatus5" /> &nbsp;
-                <span>HS Chứng minh nhân thân có khớp với Hộ chiếu, thị thực không?</span>
-            </div>
-            <div style="text-align: center">Ghi chú</div>
-            <hr />
-        </el-col>
-    </el-row>
-    <br />
-    <el-input v-model="inputForm.rejectReason" autosize type="textarea" placeholder="Lý do từ chối">
-    </el-input>
-    <br />
-    <br />
-    <div style="text-align: center;">
-        <el-button type="primary" @click="approvedProfileMethod()" :loading="loaddingApprovedButton">DUYỆT HỒ SƠ
-        </el-button>
-        <el-button type="warning" @click="rejectProfileMethod()" :loading="loaddingRejectButton">TỪ CHỐI HỒ SƠ</el-button>
-    </div>
+    <span v-if="radioModel == 'a'">
+        <el-row :gutter="20">
+            <el-col :span="15">
+                <div>Thông tin file</div>
+                <br/>
+                <div>Thông tin chi tiết</div>
+                <el-form ref="formRef" :model="inputForm" :rules="rulesData" label-width="140px" class="demo-ruleForm"
+                    label-position="top">
+                    <el-row :gutter="20">
+                        <el-col :span="12">
+                            <el-form-item label="Chọn nguồn tiền thanh toán" prop="bankType">
+                                <el-select style="width: 100%" v-model="inputForm.bankType"
+                                    placeholder="Chọn nguồn tiền thanh toán">
+                                    <el-option label="Tài khoản thanh toán PVcomBank" value="pvcb" />
+                                    <el-option disabled label="Tài khoản thanh toán TechcomBank" value="tcb" />
+                                    <el-option disabled label="Tài khoản thanh toán BIDV" value="bid" />
+                                </el-select>
+                            </el-form-item>
+                            <el-form-item label="Nhập mã chuyển tiền (nếu có)" prop="code">
+                                <el-input v-model.number="inputForm.code" autocomplete="off" />
+                            </el-form-item>
+                            <el-form-item label="Nhập số tiền muốn chuyển" prop="money">
+                                <!-- <ElCurrencyInput  v-model="inputForm.money" :options="{ currency: 'USD' }" /> -->
+                                <el-input type="number" v-model="inputForm.money" />
+                            </el-form-item>
+                            <el-form-item label="Số tài khoản" prop="accountNumber">
+                                <!-- <el-select v-model="inputForm.accountNumber" placeholder="Chọn số tài khoản"
+                                    style="width: 100%" @change="changeAccountNumberMethod()">
+                                    <el-option v-for="item in accountNumberList" :key="item.value" :label="item.label"
+                                        :value="item.label" />
+                                </el-select> -->
+                            </el-form-item>
+                            <el-form-item label="Chi phí trong nước tính vào" prop="internalFees">
+                                <el-select style="width: 100%" v-model="inputForm.internalFees">
+                                    <el-option label="Chúng tôi" value="sendType" />
+                                    <el-option label="Người thụ hưởng" value="recieveType"
+                                        :disabled="inputForm.externalFees == 'sendType'" />
+                                </el-select>
+                            </el-form-item>
+                            <el-form-item label="Tổng chi phí quy đổi" prop="moneyShow">
+                                <span>{{ formatterCurrency.format(inputForm.moneyShow) }}</span>
+                            </el-form-item>
+                            <el-form-item v-if="inputForm.targetTransfer == 'A' || inputForm.targetTransfer == 'B'"
+                                label="Đối tượng chuyển tiền" prop="objectTransfer">
+                                <el-radio-group v-model="inputForm.objectTransfer">
+                                    <el-radio label="me">Bản thân</el-radio>
+                                    <el-radio label="nome">Người thân</el-radio>
+                                </el-radio-group>
+                            </el-form-item>
+                        </el-col>
+
+                        <!-- column 2 -->
+                        <el-col :span="12">
+                            <el-form-item label="Chọn mục đích chuyển tiền" prop="targetTransfer">
+                                <!-- <el-select v-model="inputForm.targetTransfer" placeholder="Chọn mục đích chuyển tiền"
+                                    style="width: 100%">
+                                    <el-option v-for="item in targetTransferList" :key="item.value" :label="item.label"
+                                        :value="item.value" />
+                                </el-select> -->
+                            </el-form-item>
+                            <el-form-item label="Chọn loại tiền tệ" prop="moneyType">
+                                <!-- <el-select v-model="inputForm.moneyType" @change="changeMoneyTypeMethod()"
+                                    placeholder="Chọn loại tiền tệ" style="width: 100%">
+                                    <el-option v-for="item in  moneyTypeList" :key="item.name" :label="item.label"
+                                        :value="item.name" />
+                                </el-select> -->
+                            </el-form-item>
+                            <el-form-item label="Tỷ giá ngoại tệ" prop="rate">
+                                <!-- <el-input v-model.number="inputForm.rate" readonly autocomplete="off" /> -->
+                                <span>{{ formatterCurrency.format(inputForm.rate) }}</span>
+                            </el-form-item>
+                            <el-form-item label="Số dư khả dụng" prop="balance">
+                                <!-- <el-input v-model.number="inputForm.balance" readonly autocomplete="off">
+              <template #append>VND</template>
+            </el-input> -->
+                                <span>{{ formatterCurrency.format(inputForm.balance) }}</span>
+                            </el-form-item>
+                            <el-form-item label="Chi phí nước ngoài tính vào" prop="externalFees">
+                                <el-select v-model="inputForm.externalFees" style="width: 100%">
+                                    <el-option label="Chúng tôi" value="sendType"
+                                        :disabled="inputForm.internalFees == 'recieveType'" />
+                                    <el-option label="Người thụ hưởng" value="recieveType" />
+                                </el-select>
+                            </el-form-item>
+                            <el-form-item label="Tổng tiền cần thanh toán" prop="moneyShow">
+                                <!-- <el-input v-model.number="inputForm.moneyPay" readonly autocomplete="off">
+              <template #append>VND</template>
+            </el-input> -->
+                                <!-- <ElCurrencyInput v-model="inputForm.moneyPay" :options="{ currency: 'VND', locale: 'de-DE' }" /> -->
+                                <span style="font-weight: bold; color: red">{{
+                                        formatterCurrency.format(inputForm.moneyPay)
+                                }}</span>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                </el-form>
+
+            </el-col>
+            <el-col :span="9">
+                <div style="text-align: center; font-weight: bold">Dành cho nhân viên hậu kiểm</div>
+                <el-radio-group v-model="inputForm1.check" class="ml-4">
+                    <el-radio label="1">Đúng, chính xác, hợp lệ</el-radio>
+                    <el-radio label="2">Không đúng, không hợp lệ, chưa chính xác</el-radio>
+                </el-radio-group>
+                <h4>1. Kiểm tra định dạng các hồ sơ</h4>
+                <div>
+                    <el-switch v-model="inputForm1.hasStatus1" /> &nbsp;
+                    <span>HS chứng minh học phí</span>
+                </div>
+                <div>
+                    <el-switch v-model="inputForm1.hasStatus2" /> &nbsp;
+                    <span>HS chứng minh sinh hoạt phí</span>
+                </div>
+                <div>
+                    <el-switch v-model="inputForm1.hasStatus3" /> &nbsp;
+                    <span>Hộ chiếu (Passport)</span>
+                </div>
+                <div>
+                    <el-switch v-model="inputForm1.hasStatus4" /> &nbsp;
+                    <span>Thị thực (Visa)</span>
+                </div>
+                <div>
+                    <el-switch v-model="inputForm1.hasStatus5" /> &nbsp;
+                    <span>Chứng minh nhân thân</span>
+                </div>
+                <br />
+                <div style="text-align: center">Ghi chú</div>
+                <hr />
+                <!-- this is two -->
+                <h4>2. Kiểm tra thông tin quan trọng của các hồ sơ</h4>
+                <div>
+                    <el-switch v-model="inputForm1.checkStatus1" /> &nbsp;
+                    <span>HS chứng minh học phí đúng thời gian thực tế không?</span>
+                </div>
+                <div>
+                    <el-switch v-model="inputForm1.checkStatus2" /> &nbsp;
+                    <span>Hộ chiếu còn hiệu lực không?</span>
+                </div>
+                <div>
+                    <el-switch v-model="inputForm1.checkStatus3" /> &nbsp;
+                    <span>Thị thực còn hiệu lực không?</span>
+                </div>
+                <div>
+                    <el-switch v-model="inputForm1.checkStatus4" /> &nbsp;
+                    <span>Quốc gia trên HS học phí và trên thị thực có khớp nhau không?</span>
+                </div>
+                <div>
+                    <el-switch v-model="inputForm1.checkStatus5" /> &nbsp;
+                    <span>HS Chứng minh nhân thân có khớp với Hộ chiếu, thị thực không?</span>
+                </div>
+                <div style="text-align: center">Ghi chú</div>
+                <hr />
+            </el-col>
+        </el-row>
+        <br />
+        <el-input v-model="inputForm1.rejectReason" autosize type="textarea" placeholder="Lý do từ chối">
+        </el-input>
+        <br />
+        <br />
+        <div style="text-align: center;">
+            <el-button type="primary" @click="approvedProfileMethod()" :loading="loaddingApprovedButton">DUYỆT HỒ SƠ
+            </el-button>
+            <el-button type="warning" @click="rejectProfileMethod()" :loading="loaddingRejectButton">TỪ CHỐI HỒ SƠ
+            </el-button>
+        </div>
     </span>
-    <span v-if="radioModel=='b'">hợp đồng chuyển tiền</span>
+    <span v-if="radioModel == 'b'">hợp đồng chuyển tiền</span>
     <br />
     <br />
     <br />
@@ -101,6 +196,23 @@ const radioModel = ref('a')
 const loaddingApprovedButton = ref(false)
 const loaddingRejectButton = ref(false)
 const inputForm = reactive({
+    bankType: "pvcb",
+    code: "",
+    money: Number(),
+    accountNumber: "",
+    targetTransfer: "A",
+    objectTransfer: 'nome',
+    moneyType: "",
+    balance: Number(),
+    rate: Number(),
+    rateUSD: Number(23235),
+    internalFees: "sendType",
+    externalFees: "recieveType",
+    moneyShow: Number(),
+    moneyPay: Number(),
+    moneyTypeChoose: "USD"
+});
+const inputForm1 = reactive({
     check: "",
     rejectReason: "",
     hasStatus1: false,
@@ -115,6 +227,11 @@ const inputForm = reactive({
     checkStatus5: false
 
 })
+const formatterCurrency = new Intl.NumberFormat("de-DE", {
+    style: "currency",
+    currency: "VND",
+    minimumFractionDigits: 0,
+});
 const rulesData = reactive<FormRules>({
     check: [{ required: true, message: "Thông tin không được để trống" }]
 });
