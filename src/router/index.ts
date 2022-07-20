@@ -4,6 +4,21 @@ import LayoutEway from '@/layout/IndexEway.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
+    path: '/hello',
+    name: 'helloName',
+    component: () => import(/* webpackChunkName: "about" */ '@/components/HelloWorld.vue')
+  },
+  {
+    path: '/login',
+    name: 'loginName',
+    component: () => import('@/login/LoginPage.vue')
+  },
+  {
+    path: '/dashboard',
+    name: 'DashboardCheckName',
+    component: () => import('@/dashboard/DashboardPage.vue')
+  },
+  {
     path: '/',
     name: 'home',
     redirect: {
@@ -63,5 +78,23 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
 })
+// const router = createRouter()
+
+router.beforeEach((to, from, next) => {
+
+  //url công khai có thể truy cập không cần xác thực
+  const publicPages = ['/login', '/dashboard'];
+  //url yêu cầu xác thực
+  const authRequired = !publicPages.includes(to.path);
+  //check xem có token hay không, không có trả về null
+  const loggedIn = localStorage.getItem('userInfo');
+
+  // truy cập page yêu cầu xác thực và không được công khai thì chuyển về page login
+  if (authRequired && !loggedIn) {
+    next("/login")
+  } else {
+    next();
+  }
+});
 
 export default router

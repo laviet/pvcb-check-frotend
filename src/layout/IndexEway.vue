@@ -37,15 +37,7 @@
         &nbsp; &nbsp; &nbsp;
         <span class="class-nav">PHÊ DUYỆT HỒ SƠ YÊU CẦU CHUYỂN TIỀN QUỐC TẾ</span>
         <div class="flex-grow-class" />
-        <span class="class-nav" style="color: orange">Nguyễn Văn Nam</span>
-        <!-- <el-sub-menu index="2">
-            <template #title>
-                <el-icon>
-                    <Avatar />
-                </el-icon>
-            </template>
-            <el-menu-item index="2-1">Đăng xuất</el-menu-item>
-        </el-sub-menu> -->
+        <span class="class-nav" style="color: orange">{{ fullName }}</span>
         &nbsp; &nbsp; &nbsp;
         <el-dropdown style="display: block; line-height: 60px;height: 60px;">
             <el-button type="text" style="color: orange">
@@ -55,7 +47,7 @@
             </el-button>
             <template #dropdown>
                 <el-dropdown-menu>
-                    <el-dropdown-item>Đăng xuất</el-dropdown-item>
+                    <el-dropdown-item @click="logoutMethod()">Đăng xuất</el-dropdown-item>
                 </el-dropdown-menu>
             </template>
         </el-dropdown>
@@ -65,8 +57,10 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import router from "@/router";
+import { ref, onMounted } from 'vue'
 import AppMain from './AppMain.vue'
+import TokenReponse from "@/check/interface/DataModel";
 import {
     Document,
     Menu as IconMenu,
@@ -75,6 +69,7 @@ import {
 
 
 const isCollapse = ref(false)
+const fullName = ref()
 const handleOpen = (key: string, keyPath: string[]) => {
     console.log(key, keyPath)
 }
@@ -89,6 +84,19 @@ const handleSelect = (key: string, keyPath: string[]) => {
 function collapseMethod() {
     isCollapse.value = !isCollapse.value
 }
+function logoutMethod() {
+    localStorage.removeItem("userInfo")
+    const redirectUri = "http://10.1.136.185:3001/login";
+    window.location.href = `https://connect-internal.pvcb.vn/auth/realms/pvcombank-internal/protocol/openid-connect/logout?redirect_uri=${redirectUri}`;
+}
+function fetchData() {
+    let data: TokenReponse = JSON.parse(localStorage.getItem("userInfo")!);
+    fullName.value = data.full_name
+}
+onMounted(() => {
+    fetchData()
+});
+
 </script>
 
 <style>

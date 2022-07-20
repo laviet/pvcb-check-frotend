@@ -2,32 +2,42 @@
     <div style=" margin-bottom: 10px; ">
         <span>
             <div class="search-header"> Tên khách hàng<div>
-                    <el-input v-model="dataSearch.code" style="width: 140px" />
+                    <el-input v-model="dataSearch.code" style="width: 200px">
+                        <template #append>
+                            <el-button :icon="Search" @click="searchHeaderMethod()" />
+                        </template>
+                    </el-input>
                 </div>
             </div>
             <div class="search-header"> Mã yêu cầu<div>
-                    <el-input v-model="dataSearch.fullName" style="width: 140px" />
+                    <el-input v-model="dataSearch.fullName" style="width: 200px">
+                        <template #append>
+                            <el-button :icon="Search" @click="searchHeaderMethod()" />
+                        </template>
+                    </el-input>
                 </div>
             </div>
             <div class="search-header">Trạng thái<div>
                     <el-select v-model="dataSearch.status" :clearable="true" class="m-2" placeholder=" "
-                        style="width: 140px">
+                        style="width: 140px" @change="searchHeaderMethod()">
                         <el-option v-for="item in statusList" :key="item.value" :label="item.label"
                             :value="item.value" />
                     </el-select>
                 </div>
             </div>
             <div class="search-header">Từ ngày<div>
-                    <el-date-picker v-model="dataSearch.startDate" type="date" placeholder="" style="width: 140px" />
+                    <el-date-picker @change="searchHeaderMethod()" v-model="dataSearch.startDate" type="date"
+                        placeholder="" style="width: 140px" />
                 </div>
             </div>
             <div class="search-header">Đến ngày<div>
-                    <el-date-picker v-model="dataSearch.endDate" type="date" placeholder="" style="width: 140px" />
+                    <el-date-picker @change="searchHeaderMethod()" v-model="dataSearch.endDate" type="date"
+                        placeholder="" style="width: 140px" />
                 </div>
             </div>
             <div class="search-header">Sắp xếp<div>
-                    <el-select v-model="dataSearch.sort" :clearable="true" class="m-2" placeholder=" "
-                        style="width: 140px">
+                    <el-select v-model="dataSearch.sort" @change="searchByProperties()" :clearable="true" class="m-2"
+                        placeholder=" " style="width: 140px">
                         <el-option v-for="item in sortList" :key="item.value" :label="item.label" :value="item.value" />
                     </el-select>
                 </div>
@@ -36,7 +46,7 @@
         <span style="float: right"></span>
     </div>
     <el-table :data="tableData" :row-class-name="tableRowClassName">
-        <el-table-column width="200">
+        <el-table-column width="180">
             <template #header>
                 <div>MÃ YÊU CẦU</div>
                 <div>Tên khách hàng</div>
@@ -46,7 +56,7 @@
                 <span>{{ scope.row.date }}</span>
             </template>
         </el-table-column>
-        <el-table-column width="180">
+        <el-table-column width="150">
             <template #header>
                 <div>Số CIF</div>
                 <div style="font-weight: normal">Số TKTT</div>
@@ -55,7 +65,7 @@
                 <span>{{ scope.row.name }}</span>
             </template>
         </el-table-column>
-        <el-table-column>
+        <el-table-column width="150">
             <template #header>
                 <div>SỐ ĐIỆN THOẠI</div>
                 <div style="font-weight: normal">Email</div>
@@ -64,7 +74,7 @@
                 <span>{{ scope.row.name }}</span>
             </template>
         </el-table-column>
-        <el-table-column>
+        <el-table-column width="150">
             <template #header>
                 <div>SỐ TIỀN CHUYỂN</div>
                 <div style="font-weight: normal">Quy đổi VNĐ</div>
@@ -73,7 +83,7 @@
                 <span>{{ scope.row.name }}</span>
             </template>
         </el-table-column>
-        <el-table-column>
+        <el-table-column width="150">
             <template #header>
                 <div>HỒ SƠ ĐÃ NỘP</div>
             </template>
@@ -81,7 +91,7 @@
                 <span>{{ scope.row.name }}</span>
             </template>
         </el-table-column>
-        <el-table-column>
+        <el-table-column width="200">
             <template #header>
                 <div>THÔNG TIN HẬU KIỂM</div>
             </template>
@@ -90,9 +100,9 @@
             </template>
         </el-table-column>
         <el-table-column prop="date" label="USER
-            HẬU KIỂM">
+            HẬU KIỂM" width="150">
         </el-table-column>
-        <el-table-column>
+        <el-table-column width="150">
             <template #header>
                 <div>TÌNH TRẠNG GIAO DỊCH</div>
             </template>
@@ -114,6 +124,10 @@
 <script lang="ts" setup>
 import router from "@/router";
 import { reactive, ref, onMounted, watch, toRefs, vModelRadio } from "vue";
+import { Search } from '@element-plus/icons-vue'
+import { useRoute } from "vue-router";
+import {testFunction} from "@/check/interface/CommonFunction"
+const route = useRoute();
 const dataSearch = reactive({
     code: "",
     fullName: "",
@@ -125,7 +139,7 @@ const dataSearch = reactive({
 // function tableHeaderColor(){
 //     return "background-color: #78a5e7;color: #fff;font-weight: bold;";
 // }
-const currentPage = ref(1)
+const currentPage = ref(3)
 const pageSize = ref(10)
 const small = ref(false)
 const background = ref(true)
@@ -160,6 +174,16 @@ function handleClick(id: string) {
         name: "detailCheckName",
         params: { id: id }
     });
+}
+
+function searchHeaderMethod() {
+    // testFunction();
+    currentPage.value = 1
+    searchByProperties();
+}
+
+function searchByProperties() {
+    alert("search data")
 }
 const tableData: User[] = [
     {
@@ -251,6 +275,7 @@ const sortList = [
 }
 
 .el-table .cell {
-    text-align: center
+    text-align: center;
+    word-break: break-word
 }
 </style>

@@ -1,4 +1,5 @@
 <template>
+    <el-page-header content="Chi tiết" @back="goBackMethod()" />
     <el-row :gutter="20">
         <el-col :span="24">
             <h3 style="text-align: center;">THÔNG TIN HẬU KIỂM <span style="float: right; font-size: 12px;">
@@ -17,7 +18,7 @@
         <el-row :gutter="20">
             <el-col :span="15">
                 <div>Thông tin file</div>
-                <br/>
+                <br />
                 <div>Thông tin chi tiết</div>
                 <el-form ref="formRef" :model="inputForm" :rules="rulesData" label-width="140px" class="demo-ruleForm"
                     label-position="top">
@@ -139,9 +140,7 @@
                     <span>Chứng minh nhân thân</span>
                 </div>
                 <br />
-                <div style="text-align: center">Ghi chú</div>
-                <hr />
-                <!-- this is two -->
+                <el-input v-model="inputForm1.note1" placeholder="Ghi chú"></el-input>
                 <h4>2. Kiểm tra thông tin quan trọng của các hồ sơ</h4>
                 <div>
                     <el-switch v-model="inputForm1.checkStatus1" /> &nbsp;
@@ -163,8 +162,8 @@
                     <el-switch v-model="inputForm1.checkStatus5" /> &nbsp;
                     <span>HS Chứng minh nhân thân có khớp với Hộ chiếu, thị thực không?</span>
                 </div>
-                <div style="text-align: center">Ghi chú</div>
-                <hr />
+                <br />
+                <el-input v-model="inputForm1.note2" placeholder="Ghi chú"></el-input>
             </el-col>
         </el-row>
         <br />
@@ -185,6 +184,7 @@
     <br />
 </template>
 <script lang="ts" setup>
+import router from "@/router";
 import { reactive, ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import type { FormInstance, FormRules } from "element-plus";
@@ -215,6 +215,8 @@ const inputForm = reactive({
 const inputForm1 = reactive({
     check: "",
     rejectReason: "",
+    note1: "",
+    note2: "",
     hasStatus1: false,
     hasStatus2: false,
     hasStatus3: false,
@@ -240,6 +242,11 @@ function fetchData() {
 }
 function downloadFileMethod() {
     alert("download")
+}
+function goBackMethod() {
+    router.push({
+        name: "listCheckName",
+    });
 }
 function approvedProfileMethod() {
     loaddingApprovedButton.value = true
