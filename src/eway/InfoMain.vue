@@ -321,6 +321,7 @@
 <script lang="ts" setup>
 import { reactive, ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
+import httpbe from "@/http-be";
 // import { UploadFilled } from "@element-plus/icons-vue";
 import { ElMessage, ElMessageBox, FormInstance, FormRules } from "element-plus";
 import type { UploadProps, UploadUserFile } from "element-plus";
@@ -381,10 +382,12 @@ const dataChangeTarget = reactive({
 
 let targetTransfer: any;
 let objectTransfer: any;
+const idTransfer = ref();
 
 function changeDataTransfer() {
   targetTransfer = route.params.targetTransferSelect;
   objectTransfer = route.params.objectTransferSelect;
+  idTransfer.value = route.query.id;
   if (targetTransfer == 'A') {
     dataChangeTarget.title1 = "Thông báo học phí/sinh hoạt phí của du học sinh"
     dataChangeTarget.description1 = "Thông báo của cơ sở đào tạo nước ngoài có thể hiện tên của du học sinh"
@@ -574,7 +577,12 @@ const submitForm21 = (formEl: FormInstance | undefined) => {
         return;
       }
       if (inputForm.inputData21.verifyCode == "112233") {
-        nextHorizontalMethod();
+        alert(idTransfer.value)
+        httpbe.put(`/payment/info?id=${idTransfer.value}`).then((resp) => {
+          console.log(resp.data.payload)
+          nextHorizontalMethod();
+        });
+
       } else {
         ElMessage({
           message: "Mã OTP không chính xác",

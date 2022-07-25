@@ -50,7 +50,7 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('@/eway/InfoTransfer.vue')
       },
       {
-        path: 'info',
+        path: `info`,
         name: "infoMainName",
         component: () => import('@/eway/InfoMain.vue'),
       }

@@ -11,8 +11,6 @@ import jwt_decode from "jwt-decode";
 import TokenReponse, { DecodedToken } from "@/check/interface/DataModel";
 const route = useRoute();
 
-const showName = ref()
-
 function fetchData() {
     const mycode = route.query.code;
     httpbe.get(`/keycloak/token?code=${mycode}`).then((resp) => {

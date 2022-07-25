@@ -33,7 +33,8 @@
           <el-form-item label="Số tài khoản" prop="accountNumber">
             <el-select v-model="inputForm.accountNumber" placeholder="Chọn số tài khoản" style="width: 100%"
               @change="changeAccountNumberMethod()">
-              <el-option v-for="item in accountNumberList" :key="item.value" :label="item.label" :value="item.label" />
+              <el-option v-for="item in accountNumberList" :key="item.id" :label="item.accountNumber"
+                :value="item.accountNumber" />
             </el-select>
           </el-form-item>
           <el-form-item label="Chi phí trong nước tính vào" prop="internalFees">
@@ -67,7 +68,7 @@
           <el-form-item label="Chọn loại tiền tệ" prop="moneyType">
             <el-select v-model="inputForm.moneyType" @change="changeMoneyTypeMethod()" placeholder="Chọn loại tiền tệ"
               style="width: 100%">
-              <el-option v-for="item in  moneyTypeList" :key="item.name" :label="item.label" :value="item.name" />
+              <el-option v-for="item in  moneyTypeList" :key="item.id" :label="item.name" :value="item.name" />
             </el-select>
           </el-form-item>
           <el-form-item label="Tỷ giá ngoại tệ" prop="rate">
@@ -189,6 +190,7 @@ import { ElMessage } from "element-plus";
 // import CurrencyInput from './CurrencyInput.vue'
 import ElCurrencyInput from './ElCurrencyInput.vue'
 import { assertStaticBlock } from "@babel/types";
+import { lte } from "lodash";
 // const active = ref(0);
 // const nextMethod = () => {
 //   if (active.value++ > 1) {
@@ -210,7 +212,7 @@ const inputForm = reactive({
   accountNumber: "",
   targetTransfer: "A",
   objectTransfer: 'nome',
-  moneyType: "",
+  moneyType: String(),
   balance: Number(),
   rate: Number(),
   rateUSD: Number(23235),
@@ -262,11 +264,6 @@ const targetTransferList = [
     label: "Định cư ở nước ngoài",
   },
 ];
-const accountNumberList = ref([{
-  value: "",
-  label: "",
-}]);
-
 const rulesData = reactive<FormRules>({
   bankType: [{ required: true, message: "Thông tin không được để trống" }],
   money: [
@@ -290,10 +287,15 @@ const submitForm = (formEl: FormInstance | undefined) => {
   formEl.validate((valid) => {
     if (valid) {
       checkBeforceInput();
-      router.push({
-        name: "infoMainName",
-        params: { targetTransferSelect: inputForm.targetTransfer, objectTransferSelect: inputForm.objectTransfer }
+      httpbe.post(`/payment/info`, inputForm).then((resp) => {
+        let id = resp.data.payload;
+        router.push({
+          name: "infoMainName",
+          params: {targetTransferSelect: inputForm.targetTransfer, objectTransferSelect: inputForm.objectTransfer },
+          query: { id: id },
+        });
       });
+
       // httpbe.post("/fund-transfer/initial", inputForm).then((resp) => {
       //   console.log("vao roi: " + resp.data.message)
       //   router.push({
@@ -311,7 +313,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
   });
 };
 watch(inputForm, () => {
-  if (inputForm.moneyType != '' && inputForm.internalFees != '' && inputForm.externalFees != '' && inputForm.money > 0) {
+  if (inputForm.internalFees != '' && inputForm.externalFees != '' && inputForm.money > 0) {
     let percentPVCB = 0.0015
     let moneyInput = inputForm.money
     let rateInput = inputForm.rate
@@ -423,67 +425,93 @@ const checkBeforceInput = () => {
 
 };
 
+
 // const resetForm = (formEl: FormInstance | undefined) => {
 //   if (!formEl) return;
 //   formEl.resetFields();
 // };
 
-const moneyTypeList = ref(
-  [
-    {
-      name: "USD",
-      label: "USD",
-      value: 23235,
-    },
-    {
-      name: "EUR",
-      label: "EUR",
-      value: 24440,
-    },
-    {
-      label: "JPY(NH Mizuho)",
-      name: "JPY1",
-      value: 172,
-    },
-    {
-      label: "JPY",
-      name: "JPY2",
-      value: 172,
-    },
-    {
-      label: "SGD(Ngân hàng ở Singapore)",
-      name: "SGD1",
-      value: 16756,
-    },
-    {
-      label: "SGD(Ngân hàng không ở Singapore)",
-      name: "SGD2",
-      value: 16756,
-    },
-    {
-      name: "GBD",
-      label: "GBD",
-      value: 28422,
-    },
-    {
-      name: "AUD",
-      label: "AUD",
-      value: 16230,
-    },
-  ],
-);
+// const moneyTypeList = ref(
+//   [
+//     {
+//       name: "USD",
+//       label: "USD",
+//       value: 23235,
+//     },
+//     {
+//       name: "EUR",
+//       label: "EUR",
+//       value: 24440,
+//     },
+//     {
+//       label: "JPY(NH Mizuho)",
+//       name: "JPY1",
+//       value: 172,
+//     },
+//     {
+//       label: "JPY",
+//       name: "JPY2",
+//       value: 172,
+//     },
+//     {
+//       label: "SGD(Ngân hàng ở Singapore)",
+//       name: "SGD1",
+//       value: 16756,
+//     },
+//     {
+//       label: "SGD(Ngân hàng không ở Singapore)",
+//       name: "SGD2",
+//       value: 16756,
+//     },
+//     {
+//       name: "GBD",
+//       label: "GBD",
+//       value: 28422,
+//     },
+//     {
+//       name: "AUD",
+//       label: "AUD",
+//       value: 16230,
+//     },
+//   ],
+// );
+
+interface MoneyType {
+  id: number,
+  name: string,
+}
+const moneyTypeList = ref<Array<MoneyType>>([])
+const accountNumberList = ref([{
+  id: Number(),
+  accountNumber: String(),
+  currentBalance: Number(),
+}]);
 
 
-// const getMoneyTypeMethod = () => {
-//   http.get("/exchange-rate").then((resp) => {
-//     moneyTypeList.foo = resp.data;
-//   });
-// };
+async function getCurrencyTypeList() {
+  await httpbe.get("/transfer/currency-type").then((resp) => {
+    moneyTypeList.value = resp.data.payload;
+    inputForm.moneyType = moneyTypeList.value[0].name
+  });
+}
+async function getAccountNumberList() {
+  await httpbe.get("/account/list").then((resp) => {
+    accountNumberList.value = resp.data.payload;
+    let fisrtAccount = accountNumberList.value[0];
+    inputForm.accountNumber = fisrtAccount.accountNumber
+    inputForm.balance = fisrtAccount.currentBalance
+  });
+}
+function getExchangeRate() {
+  let idSelect = moneyTypeList.value.filter(x => x.name == inputForm.moneyType)[0].id
+  httpbe.get(`/transfer/exchange-rate/${idSelect}`).then((resp) => {
+    inputForm.rate = resp.data.payload.value;
+  });
+}
 
 const changeMoneyTypeMethod = () => {
   if (inputForm.moneyType != "") {
-    let moneyTypeSelect = moneyTypeList.value.filter(x => x.name == inputForm.moneyType)[0]
-    inputForm.rate = moneyTypeSelect.value;
+    getExchangeRate()
   }
   if (inputForm.moneyType == 'USD') {
     inputForm.moneyTypeChoose = 'USD'
@@ -500,8 +528,8 @@ const changeMoneyTypeMethod = () => {
   }
 };
 const changeAccountNumberMethod = () => {
-  let balanceSelect = accountNumberList.value.filter(x => x.label == inputForm.accountNumber)[0].value;
-  inputForm.balance = Number(balanceSelect);
+  let balanceSelect = accountNumberList.value.filter(x => x.accountNumber == inputForm.accountNumber)[0].currentBalance;
+  inputForm.balance = balanceSelect;
 };
 
 const formatterCurrency = new Intl.NumberFormat("de-DE", {
@@ -520,13 +548,13 @@ const formatterCurrency = new Intl.NumberFormat("de-DE", {
 
 // alert(data);
 // };
-const getAccountsMethod = () => {
-  http.get("/accounts").then((resp) => {
-    let accountList = accountNumberList.value = resp.data;
-    inputForm.accountNumber = accountList[0].label;
-    changeAccountNumberMethod()
-  });
-};
+// const getAccountsMethod = () => {
+//   http.get("/accounts").then((resp) => {
+//     let accountList = accountNumberList.value = resp.data;
+//     inputForm.accountNumber = accountList[0].label;
+//     changeAccountNumberMethod()
+//   });
+// };
 var myList = [
   {
     value: Number(),
@@ -548,12 +576,17 @@ const mylll = ref([{
 //   });
 // }
 
+async function fetchData() {
+  await Promise.all([
+    getCurrencyTypeList(), getAccountNumberList()
+  ])
+  getExchangeRate()
+}
+
 
 
 onMounted(() => {
-  // getExchangeRateIntial()
-  getAccountsMethod();
-
+  fetchData()
 });
 </script>
 
