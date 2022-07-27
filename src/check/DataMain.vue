@@ -1,42 +1,42 @@
 <template>
     <div style=" margin-bottom: 10px; ">
         <span>
-            <div class="search-header"> Tên khách hàng<div>
+            <div class="search-header">Mã yêu cầu<div>
                     <el-input v-model="dataSearch.code" style="width: 200px">
                         <template #append>
-                            <el-button :icon="Search" @click="searchHeaderMethod()" />
+                            <el-button :icon="Search" @click="filterDataMethod(true)" />
                         </template>
                     </el-input>
                 </div>
             </div>
-            <div class="search-header"> Mã yêu cầu<div>
+            <div class="search-header">Tên khách hàng<div>
                     <el-input v-model="dataSearch.fullName" style="width: 200px">
                         <template #append>
-                            <el-button :icon="Search" @click="searchHeaderMethod()" />
+                            <el-button :icon="Search" @click="filterDataMethod(true)" />
                         </template>
                     </el-input>
                 </div>
             </div>
             <div class="search-header">Trạng thái<div>
                     <el-select v-model="dataSearch.status" :clearable="true" class="m-2" placeholder=" "
-                        style="width: 140px" @change="searchHeaderMethod()">
+                        style="width: 140px" @change="filterDataMethod(true)">
                         <el-option v-for="item in statusList" :key="item.value" :label="item.label"
                             :value="item.value" />
                     </el-select>
                 </div>
             </div>
             <div class="search-header">Từ ngày<div>
-                    <el-date-picker @change="searchHeaderMethod()" v-model="dataSearch.startDate" type="date"
+                    <el-date-picker @change="filterDataMethod(true)" v-model="dataSearch.startDate" type="date"
                         placeholder="" style="width: 140px" />
                 </div>
             </div>
             <div class="search-header">Đến ngày<div>
-                    <el-date-picker @change="searchHeaderMethod()" v-model="dataSearch.endDate" type="date"
+                    <el-date-picker @change="filterDataMethod(true)" v-model="dataSearch.endDate" type="date"
                         placeholder="" style="width: 140px" />
                 </div>
             </div>
             <div class="search-header">Sắp xếp<div>
-                    <el-select v-model="dataSearch.sort" @change="searchByProperties()" :clearable="true" class="m-2"
+                    <el-select v-model="dataSearch.sort" @change="filterDataMethod(false)" :clearable="true" class="m-2"
                         placeholder=" " style="width: 140px">
                         <el-option v-for="item in sortList" :key="item.value" :label="item.label" :value="item.value" />
                     </el-select>
@@ -45,7 +45,7 @@
         </span>
         <span style="float: right"></span>
     </div>
-    <el-table :data="tableData" :row-class-name="tableRowClassName">
+    <el-table :data="tableDataFilter" :row-class-name="tableRowClassName">
         <el-table-column width="180">
             <template #header>
                 <div>MÃ YÊU CẦU</div>
@@ -53,7 +53,9 @@
                 <div style="font-weight: normal">Mục đích chuyển tiền</div>
             </template>
             <template #default="scope">
-                <span>{{ scope.row.date }}</span>
+                <div class="bold-class">{{ scope.row.code }}</div>
+                <div class="bold-class">{{ scope.row.createdUser }}</div>
+                <div>{{ scope.row.targetTransferLabel }}</div>
             </template>
         </el-table-column>
         <el-table-column width="150">
@@ -62,7 +64,7 @@
                 <div style="font-weight: normal">Số TKTT</div>
             </template>
             <template #default="scope">
-                <span>{{ scope.row.name }}</span>
+                <span>{{ scope.row.accountNumber }}</span>
             </template>
         </el-table-column>
         <el-table-column width="150">
@@ -71,7 +73,7 @@
                 <div style="font-weight: normal">Email</div>
             </template>
             <template #default="scope">
-                <span>{{ scope.row.name }}</span>
+                <span>{{ scope.row.email }}</span>
             </template>
         </el-table-column>
         <el-table-column width="150">
@@ -80,23 +82,26 @@
                 <div style="font-weight: normal">Quy đổi VNĐ</div>
             </template>
             <template #default="scope">
-                <span>{{ scope.row.name }}</span>
+                <div>{{ scope.row.money }} {{ scope.row.moneyType }}</div>
+                <div> {{ formatterCurrency.format(scope.row.moneyTransferVND) }}</div>
             </template>
         </el-table-column>
         <el-table-column width="150">
             <template #header>
                 <div>HỒ SƠ ĐÃ NỘP</div>
             </template>
-            <template #default="scope">
+            <!-- <template #default="scope">
                 <span>{{ scope.row.name }}</span>
-            </template>
+            </template> -->
         </el-table-column>
         <el-table-column width="200">
             <template #header>
                 <div>THÔNG TIN HẬU KIỂM</div>
             </template>
             <template #default="scope">
-                <span>{{ scope.row.name }}</span>
+                <div v-if="scope.row.status == 'APPROVE_WAIT'" class="bold-class" style="color: green">CHỜ DUYỆT</div>
+                <div v-else-if="scope.row.status == 'APPROVED'" class="bold-class">ĐÃ DUYỆT</div>
+                <div v-else-if="scope.row.status == 'REJECT'" class="bold-class" style="color: red">TỪ CHỐI</div>
             </template>
         </el-table-column>
         <el-table-column prop="date" label="USER
@@ -107,18 +112,19 @@
                 <div>TÌNH TRẠNG GIAO DỊCH</div>
             </template>
             <template #default="scope">
-                <span>{{ scope.row.name }}</span>
+                <span v-if="scope.row.approvedTime!=null">{{ formatDateTime(scope.row.approvedTime) }}</span>
             </template>
         </el-table-column>
         <el-table-column label="Thao tác" fixed="right" width="120">
             <template #default="scope">
-                <el-button link type="primary" size="small" @click="handleClick(scope.row.id)">Chi tiết</el-button>
+                <el-button link type="primary" size="small" @click="handleClick(scope.row.id)">Chi tiết
+                </el-button>
             </template>
         </el-table-column>
     </el-table>
     <el-pagination style="float: right; margin-top: 15px" v-model:currentPage="currentPage" v-model:page-size="pageSize"
         :page-sizes="[10, 25, 50, 100]" :small="small" :disabled="disabled" :background="background"
-        layout="sizes, prev, pager, next" :total="100" @size-change="handleSizeChange"
+        layout="sizes, prev, pager, next" :total="totalPage" @size-change="handleSizeChange"
         @current-change="handleCurrentChange" />
 </template>
 <script lang="ts" setup>
@@ -126,7 +132,9 @@ import router from "@/router";
 import { reactive, ref, onMounted, watch, toRefs, vModelRadio } from "vue";
 import { Search } from '@element-plus/icons-vue'
 import { useRoute } from "vue-router";
-import {testFunction} from "@/check/interface/CommonFunction"
+import { testFunction, formatDateTime } from "@/check/interface/CommonFunction"
+import httpbe from "@/http-be";
+
 const route = useRoute();
 const dataSearch = reactive({
     code: "",
@@ -139,17 +147,19 @@ const dataSearch = reactive({
 // function tableHeaderColor(){
 //     return "background-color: #78a5e7;color: #fff;font-weight: bold;";
 // }
-const currentPage = ref(3)
+const currentPage = ref(1)
 const pageSize = ref(10)
 const small = ref(false)
 const background = ref(true)
 const disabled = ref(false)
+const totalPage = ref(30)
 
 const handleSizeChange = (val: number) => {
-    alert(`${val} items per page`)
+    filterDataMethod(false)
 }
 const handleCurrentChange = (val: number) => {
-    alert(`current page: ${val}`)
+    // alert(`current page: ${val}`)
+    filterDataMethod(false)
 }
 interface User {
     id: string
@@ -185,58 +195,132 @@ function searchHeaderMethod() {
 function searchByProperties() {
     alert("search data")
 }
-const tableData: User[] = [
-    {
-        id: "a",
-        date: '2016-05-03',
-        name: 'Tom',
-        address: 'No. 189, Grove St, Los Angeles',
-    },
-    {
-        id: "b",
-        date: '2016-05-03',
-        name: 'Chim',
-        address: 'No. 189, Grove St, Los Angeles',
-    },
-    {
-        id: "c",
-        date: '2016-05-02',
-        name: 'Tom',
-        address: 'No. 189, Grove St, Los Angeles',
-    },
-    {
-        id: "d",
-        date: '2016-05-04',
-        name: 'An',
-        address: 'No. 189, Grove St, Los Angeles',
-    },
-    {
-        id: "e",
-        date: '2016-05-01',
-        name: 'Tom',
-        address: 'No. 189, Grove St, Los Angeles',
-    },
-]
+// const tableData: User[] = [
+//     {
+//         id: "a",
+//         date: '2016-05-03',
+//         name: 'Tom',
+//         address: 'No. 189, Grove St, Los Angeles',
+//     },
+//     {
+//         id: "b",
+//         date: '2016-05-03',
+//         name: 'Chim',
+//         address: 'No. 189, Grove St, Los Angeles',
+//     },
+//     {
+//         id: "c",
+//         date: '2016-05-02',
+//         name: 'Tom',
+//         address: 'No. 189, Grove St, Los Angeles',
+//     },
+//     {
+//         id: "d",
+//         date: '2016-05-04',
+//         name: 'An',
+//         address: 'No. 189, Grove St, Los Angeles',
+//     },
+//     {
+//         id: "e",
+//         date: '2016-05-01',
+//         name: 'Tom',
+//         address: 'No. 189, Grove St, Los Angeles',
+//     },
+// ]
 const statusList = [
     {
-        value: "A",
+        value: "APPROVED",
         label: "Đã duyệt"
     },
     {
-        value: "B",
+        value: "APPROVE_WAIT",
         label: "Chưa duyệt"
+    },
+    {
+        value: "REJECT",
+        label: "Từ chối"
     }
 ]
 const sortList = [
     {
-        value: "A",
+        value: "statusSort",
         label: "Trạng thái"
     },
     {
-        value: "B",
+        value: "fullNameSort",
         label: "Họ tên"
     }
 ]
+const formatterCurrency = new Intl.NumberFormat("de-DE", {
+    style: "currency",
+    currency: "VND",
+    minimumFractionDigits: 0,
+});
+
+interface DataRes {
+    id: string,
+    code: string,
+    money: number;
+    accountNumber: string,
+    targetTransfer: string,
+    objectTransfer: string,
+    moneyType: string,
+    balance: number,
+    rate: number,
+    rateUSD: number,
+    internalFees: string,
+    externalFees: string,
+    moneyShow: number,
+    moneyPay: number,
+    moneyTypeChoose: string,
+
+    createdUser: string,
+    email: string,
+    status: string
+    createdDate: Date
+}
+const tableData = ref<Array<DataRes>>([])
+const tableDataFilter = ref<Array<DataRes>>([])
+function filterDataMethod(resetPage: boolean) {
+    let list = tableData.value;
+    if (resetPage) {
+        currentPage.value = 1
+    }
+    if (dataSearch.code.trim() != '') {
+        list = list.filter(x => x.code.includes(dataSearch.code.trim()))
+    }
+    if (dataSearch.fullName.trim() != '') {
+        list = list.filter(x => x.createdUser.includes(dataSearch.fullName.trim()))
+    }
+    if (dataSearch.status != '') {
+        list = list.filter(x => x.status == dataSearch.status)
+    }
+    if (dataSearch.sort != '') {
+        if (dataSearch.sort == 'statusSort') {
+            list = list.sort((a, b) => (a.status > b.status) ? -1 : 1);
+        } else if (dataSearch.sort == 'fullNameSort') {
+            list = list.sort((a, b) => (a.createdUser > b.createdUser) ? -1 : 1);
+        }
+    }
+
+    totalPage.value = list.length;
+    tableDataFilter.value = list.slice(pageSize.value * (currentPage.value - 1), pageSize.value * currentPage.value);
+}
+function getDataInitial() {
+    httpbe.get("/check/list").then((resp) => {
+        let list = resp.data.payload
+        tableData.value = list;
+        totalPage.value = list.length
+        filterDataMethod(false)
+    });
+}
+function fetchData() {
+    getDataInitial()
+}
+onMounted(() => {
+    fetchData()
+});
+
 </script>
 
 <style lang="scss" >
@@ -277,5 +361,9 @@ const sortList = [
 .el-table .cell {
     text-align: center;
     word-break: break-word
+}
+
+.bold-class {
+    font-weight: bold;
 }
 </style>

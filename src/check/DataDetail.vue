@@ -17,37 +17,36 @@
     <span v-if="radioModel == 'a'">
         <el-row :gutter="20">
             <el-col :span="15">
-                <div>Thông tin file</div>
+                <h4>Thông tin file</h4>
+                <div>
+                    <!-- <el-upload v-model:file-list="fileList"
+                        action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15" list-type="picture-card"
+                        :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
+                        <el-icon>
+                            <Plus />
+                        </el-icon>
+                    </el-upload> -->
+                </div>
                 <br />
-                <div>Thông tin chi tiết</div>
+                <h4>Thông tin chi tiết</h4>
                 <el-form ref="formRef" :model="inputForm" :rules="rulesData" label-width="140px" class="demo-ruleForm"
                     label-position="top">
                     <el-row :gutter="20">
                         <el-col :span="12">
-                            <el-form-item label="Chọn nguồn tiền thanh toán" prop="bankType">
-                                <el-select style="width: 100%" v-model="inputForm.bankType"
-                                    placeholder="Chọn nguồn tiền thanh toán">
-                                    <el-option label="Tài khoản thanh toán PVcomBank" value="pvcb" />
-                                    <el-option disabled label="Tài khoản thanh toán TechcomBank" value="tcb" />
-                                    <el-option disabled label="Tài khoản thanh toán BIDV" value="bid" />
-                                </el-select>
+                            <el-form-item label="Nguồn tiền thanh toán" prop="bankType">
+                                <span>Tài khoản thanh toán PVcomBank</span>
                             </el-form-item>
-                            <el-form-item label="Nhập mã chuyển tiền (nếu có)" prop="code">
-                                <el-input v-model.number="inputForm.code" autocomplete="off" />
+                            <el-form-item label="Mã chuyển tiền" prop="code">
+                                <div>{{ inputForm.code }}</div>
                             </el-form-item>
-                            <el-form-item label="Nhập số tiền muốn chuyển" prop="money">
-                                <!-- <ElCurrencyInput  v-model="inputForm.money" :options="{ currency: 'USD' }" /> -->
-                                <el-input type="number" v-model="inputForm.money" />
+                            <el-form-item label="Số tiền muốn chuyển" prop="money">
+                                <span>{{ inputForm.money }}</span>
                             </el-form-item>
                             <el-form-item label="Số tài khoản" prop="accountNumber">
-                                <!-- <el-select v-model="inputForm.accountNumber" placeholder="Chọn số tài khoản"
-                                    style="width: 100%" @change="changeAccountNumberMethod()">
-                                    <el-option v-for="item in accountNumberList" :key="item.value" :label="item.label"
-                                        :value="item.label" />
-                                </el-select> -->
+                                <span>{{ inputForm.accountNumber }}</span>
                             </el-form-item>
                             <el-form-item label="Chi phí trong nước tính vào" prop="internalFees">
-                                <el-select style="width: 100%" v-model="inputForm.internalFees">
+                                <el-select style="width: 100%" :disabled="true" v-model="inputForm.internalFees">
                                     <el-option label="Chúng tôi" value="sendType" />
                                     <el-option label="Người thụ hưởng" value="recieveType"
                                         :disabled="inputForm.externalFees == 'sendType'" />
@@ -58,28 +57,18 @@
                             </el-form-item>
                             <el-form-item v-if="inputForm.targetTransfer == 'A' || inputForm.targetTransfer == 'B'"
                                 label="Đối tượng chuyển tiền" prop="objectTransfer">
-                                <el-radio-group v-model="inputForm.objectTransfer">
-                                    <el-radio label="me">Bản thân</el-radio>
-                                    <el-radio label="nome">Người thân</el-radio>
-                                </el-radio-group>
+                                <span v-if="inputForm.objectTransfer == 'me'">Bản thân</span>
+                                <span v-else>Người thân</span>
                             </el-form-item>
                         </el-col>
 
                         <!-- column 2 -->
                         <el-col :span="12">
-                            <el-form-item label="Chọn mục đích chuyển tiền" prop="targetTransfer">
-                                <!-- <el-select v-model="inputForm.targetTransfer" placeholder="Chọn mục đích chuyển tiền"
-                                    style="width: 100%">
-                                    <el-option v-for="item in targetTransferList" :key="item.value" :label="item.label"
-                                        :value="item.value" />
-                                </el-select> -->
+                            <el-form-item label="Mục đích chuyển tiền" prop="targetTransfer">
+                                <span>{{ inputForm.targetTransferLabel }}</span>
                             </el-form-item>
-                            <el-form-item label="Chọn loại tiền tệ" prop="moneyType">
-                                <!-- <el-select v-model="inputForm.moneyType" @change="changeMoneyTypeMethod()"
-                                    placeholder="Chọn loại tiền tệ" style="width: 100%">
-                                    <el-option v-for="item in  moneyTypeList" :key="item.name" :label="item.label"
-                                        :value="item.name" />
-                                </el-select> -->
+                            <el-form-item label="Loại tiền tệ" prop="moneyType">
+                                <span>{{ inputForm.moneyType }}</span>
                             </el-form-item>
                             <el-form-item label="Tỷ giá ngoại tệ" prop="rate">
                                 <!-- <el-input v-model.number="inputForm.rate" readonly autocomplete="off" /> -->
@@ -92,9 +81,8 @@
                                 <span>{{ formatterCurrency.format(inputForm.balance) }}</span>
                             </el-form-item>
                             <el-form-item label="Chi phí nước ngoài tính vào" prop="externalFees">
-                                <el-select v-model="inputForm.externalFees" style="width: 100%">
-                                    <el-option label="Chúng tôi" value="sendType"
-                                        :disabled="inputForm.internalFees == 'recieveType'" />
+                                <el-select :disabled="true" v-model="inputForm.externalFees" style="width: 100%">
+                                    <el-option label="Chúng tôi" value="sendType" />
                                     <el-option label="Người thụ hưởng" value="recieveType" />
                                 </el-select>
                             </el-form-item>
@@ -171,7 +159,7 @@
         </el-input>
         <br />
         <br />
-        <div style="text-align: center;">
+        <div style="text-align: center;" v-if="inputForm.status == 'APPROVE_WAIT'">
             <el-button type="primary" @click="approvedProfileMethod()" :loading="loaddingApprovedButton">DUYỆT HỒ SƠ
             </el-button>
             <el-button type="warning" @click="rejectProfileMethod()" :loading="loaddingRejectButton">TỪ CHỐI HỒ SƠ
@@ -182,20 +170,39 @@
     <br />
     <br />
     <br />
+    <el-dialog v-model="dialogVisible">
+        <img w-full :src="dialogImageUrl" alt="Preview Image" />
+    </el-dialog>
 </template>
 <script lang="ts" setup>
 import router from "@/router";
 import { reactive, ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
-import type { FormInstance, FormRules } from "element-plus";
+import type { FormInstance, FormRules, UploadProps, UploadUserFile } from "element-plus";
 import { ElMessage, ElMessageBox } from 'element-plus'
+import httpbe from "@/http-be";
 const route = useRoute();
 
 const id = route.params.id;
 const radioModel = ref('a')
 const loaddingApprovedButton = ref(false)
 const loaddingRejectButton = ref(false)
-const inputForm = reactive({
+const fileList = ref<UploadUserFile[]>([
+    {
+        name: 'abc.pdf',
+        url: '@/assets/file/abc.pdf',
+    },
+    {
+        name: 'Capture.PNG',
+        url: '@/assets/file/Capture.PNG',
+    },
+    {
+        name: 'Capture1.PNG',
+        url: 'https://recmiennam.com/wp-content/uploads/2018/04/hinh-anh-dep-ve-bien-4.jpg',
+    }
+])
+const inputForm = ref({
+    id: "",
     bankType: "pvcb",
     code: "",
     money: Number(),
@@ -210,7 +217,10 @@ const inputForm = reactive({
     externalFees: "recieveType",
     moneyShow: Number(),
     moneyPay: Number(),
-    moneyTypeChoose: "USD"
+    moneyTypeChoose: "USD",
+    targetTransferLabel: "",
+    status: '',
+    idLockAmount: ""
 });
 const inputForm1 = reactive({
     check: "",
@@ -229,6 +239,18 @@ const inputForm1 = reactive({
     checkStatus5: false
 
 })
+const dialogImageUrl = ref('')
+const dialogVisible = ref(false)
+
+const handleRemove: UploadProps['onRemove'] = (uploadFile, uploadFiles) => {
+    console.log(uploadFile, uploadFiles)
+}
+
+const handlePictureCardPreview: UploadProps['onPreview'] = (uploadFile) => {
+    dialogImageUrl.value = uploadFile.url!
+    dialogVisible.value = true
+}
+
 const formatterCurrency = new Intl.NumberFormat("de-DE", {
     style: "currency",
     currency: "VND",
@@ -236,10 +258,7 @@ const formatterCurrency = new Intl.NumberFormat("de-DE", {
 });
 const rulesData = reactive<FormRules>({
     check: [{ required: true, message: "Thông tin không được để trống" }]
-});
-function fetchData() {
-    console.log("ff")
-}
+})
 function downloadFileMethod() {
     alert("download")
 }
@@ -259,6 +278,8 @@ function approvedProfileMethod() {
         }
     )
         .then(() => {
+            approvedMethod('APPROVED')
+            unlockAmountMethod()
             ElMessage({
                 type: 'success',
                 message: "Duyệt hồ sơ thành công",
@@ -280,6 +301,8 @@ function rejectProfileMethod() {
         }
     )
         .then(() => {
+            approvedMethod('REJECT')
+            unlockAmountMethod()
             ElMessage({
                 type: 'success',
                 message: "Từ chối hồ sơ thành công",
@@ -290,8 +313,32 @@ function rejectProfileMethod() {
             }, 300);
         })
 }
+function approvedMethod(status: string) {
+    let id = inputForm.value.id;
+    httpbe.put(`/check/approved/${id}?status=${status}`).then((resp) => {
+        console.log(resp.data.payload)
+        getDataInitial()
+    });
+}
+function unlockAmountMethod() {
+    let id = inputForm.value.idLockAmount;
+    if (id != null) {
+        httpbe.post(`/account/unlock-money?id=${id}`).then((resp) => {
+            console.log(resp.data.payload)
+        });
+    }
+}
 
 
+function getDataInitial() {
+    let id1 = id;
+    httpbe.get(`/check/detail/${id1}`).then((resp) => {
+        inputForm.value = resp.data.payload
+    });
+}
+function fetchData() {
+    getDataInitial()
+}
 onMounted(() => {
     fetchData()
 });

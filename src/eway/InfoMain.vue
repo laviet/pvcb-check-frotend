@@ -577,10 +577,16 @@ const submitForm21 = (formEl: FormInstance | undefined) => {
         return;
       }
       if (inputForm.inputData21.verifyCode == "112233") {
-        alert(idTransfer.value)
         httpbe.put(`/payment/info?id=${idTransfer.value}`).then((resp) => {
           console.log(resp.data.payload)
           nextHorizontalMethod();
+        });
+        let dataInput = {
+          id: idTransfer.value
+        }
+        //phong toa số tiền
+        httpbe.post(`/account/lock-money`, dataInput).then((resp) => {
+          console.log(resp.data.payload)
         });
 
       } else {
