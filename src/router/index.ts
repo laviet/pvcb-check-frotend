@@ -80,7 +80,12 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'transfer-target',
         name: "transferTargetName",
-        component: () => import('@/fees/TransferTarget.vue')
+        component: () => import('@/fees/transfer_target/TransferTarget.vue')
+      },
+      {
+        path: 'partner',
+        name: "partnerName",
+        component: () => import('@/fees/partner/PartnerData.vue')
       }
     ],
   },

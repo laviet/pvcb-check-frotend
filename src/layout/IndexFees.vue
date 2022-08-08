@@ -8,7 +8,7 @@
             </el-icon>
             <span>Danh sách phiên</span>
         </el-menu-item> -->
-        <el-sub-menu>
+        <el-sub-menu index="1">
             <template #title>
                 <el-icon>
                     <Setting />
@@ -19,6 +19,17 @@
                 <el-menu-item index="1-4-1">Mục đích chuyển tiền</el-menu-item>
             </router-link>
             <el-menu-item index="1-4-2">Danh sách tiền tệ</el-menu-item>
+        </el-sub-menu>
+        <el-sub-menu index="2">
+            <template #title>
+                <el-icon>
+                    <User />
+                </el-icon>
+                <span>Danh sách đối tác</span>
+            </template>
+            <router-link to="/fees/partner" class="router-link-class">
+                <el-menu-item index="2-1">Đối tác</el-menu-item>
+            </router-link>
         </el-sub-menu>
     </el-menu>
 
@@ -103,8 +114,9 @@ onMounted(() => {
 
 <style>
 .router-link-class {
-  text-decoration: none;
+    text-decoration: none;
 }
+
 .flex-grow-class {
     flex-grow: 1;
 }

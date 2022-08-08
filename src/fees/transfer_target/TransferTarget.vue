@@ -1,6 +1,5 @@
 <template>
     <div>
-        <!-- <span>1</span> -->
         <span style="float: right">
             <el-button type="success" @click="createTranferTargetMethod()">Tạo</el-button>
         </span>
@@ -13,12 +12,12 @@
                 <span v-else>Bỏ kích hoạt</span>
             </template>
         </el-table-column>
-        <!-- <el-table-column label="Thao tác" fixed="right" width="120">
+        <el-table-column label="Thao tác" fixed="right" width="120">
             <template #default="scope">
-                <el-button link type="primary" size="small" @click="handleClick(scope.row.id)">Chi tiết
+                <el-button link type="primary" size="small" @click="handleClick(scope.row)">Chi tiết
                 </el-button>
             </template>
-        </el-table-column> -->
+        </el-table-column>
     </el-table>
     <TransferTargetCreate ref="childComponentRef" @closeDialog="dialogCloseCreateMethod" :mydata="showDialog"  :mydata1="showDialog1"/>
 </template>
@@ -48,6 +47,9 @@ function createTranferTargetMethod() {
 function dialogCloseCreateMethod(data: any) {
     // alert("close method: " + data)
     // showDialog.value = false;
+}
+function handleClick(row: DataRes) {
+   alert(row.id)
 }
 function getDataInitial() {
     httpbe.get("/transfer-target").then((resp) => {
