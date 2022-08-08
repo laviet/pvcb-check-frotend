@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import LayoutEway from '@/layout/IndexEway.vue'
+import LayoutFees from '@/layout/IndexFees.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -69,6 +70,17 @@ const routes: Array<RouteRecordRaw> = [
         path: 'detail/:id',
         name: "detailCheckName",
         component: () => import('@/check/DataDetail.vue')
+      }
+    ],
+  },
+  {
+    path: "/fees",
+    component: LayoutFees,
+    children: [
+      {
+        path: 'transfer-target',
+        name: "transferTargetName",
+        component: () => import('@/fees/TransferTarget.vue')
       }
     ],
   },
