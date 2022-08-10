@@ -1,60 +1,96 @@
 <template>
-    <div>
+    <div style="margin-bottom: 45px">
         <span style="float: right">
             <el-button type="success" @click="createTranferTargetMethod()">Tạo</el-button>
         </span>
     </div>
-    <el-table :data="tableData">
-        <el-table-column prop="value" label="Tên mục đích" />
-        <el-table-column label="Trạng thái">
+    <el-table :data="tableData" :header-cell-style="tableHeaderColor" border>
+        <el-table-column prop="name" label="Tên mục đích" />
+        <el-table-column label="Trạng thái" align="center" width="140px">
             <template #default="scope">
-                <span v-if="scope.row.active">Kích hoạt</span>
-                <span v-else>Bỏ kích hoạt</span>
+                <span v-if="scope.row.status == 'ACTIVE'">Kích hoạt</span>
+                <span v-else-if="scope.row.status == 'INACTIVE'">Bỏ kích hoạt</span>
             </template>
         </el-table-column>
-        <el-table-column label="Thao tác" fixed="right" width="120">
+        <el-table-column label="Đối tượng áp dụng" align="center" width="180px">
             <template #default="scope">
-                <el-button link type="primary" size="small" @click="handleClick(scope.row)">Chi tiết
+                <span v-if="scope.row.objectApply == 'all'">Tất cả</span>
+                <span v-else-if="scope.row.objectApply == 'customer'">Khách hàng</span>
+                <span v-else-if="scope.row.objectApply == 'customerGroup'">Nhóm khách hàng</span>
+            </template>
+        </el-table-column>
+        <el-table-column label="Đối tượng chuyển tiền" align="center" width="180px">
+            <template #default="scope">
+                <span v-if="scope.row.objectTransfer == 'me'">Bản thân</span>
+                <span v-else-if="scope.row.objectTransfer == 'noMe'">Người thân</span>
+            </template>
+        </el-table-column>
+        <el-table-column label="Thao tác" fixed="right" width="140" align="center">
+            <template #default="scope">
+                <el-button link type="danger" size="small" @click="deleteClick(scope.row.id)">Xóa
+                </el-button>
+                <el-button link type="primary" size="small" @click="editClick(scope.row)">Sửa
                 </el-button>
             </template>
         </el-table-column>
     </el-table>
-    <TransferTargetCreate ref="childComponentRef" @closeDialog="dialogCloseCreateMethod" :mydata="showDialog"  :mydata1="showDialog1"/>
+    <TransferTargetCreate ref="childCreateRef" @closeDialog="dialogCloseCreateMethod" />
+    <TransferTargetUpdate ref="childUpdateRef" @closeDialog="dialogCloseCreateMethod" />
 </template>
 
 <script lang="ts" setup>
 import httpbe from "@/http-fees";
 import { reactive, ref, onMounted, watch, toRefs, vModelRadio, provide } from "vue";
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { tableHeaderColor } from "@/functionCommon/CommonFun"
 import TransferTargetCreate from './TransferTargetCreate.vue'
-const childComponentRef = ref()
+import TransferTargetUpdate from './TransferTargetUpdate.vue'
+const childCreateRef = ref()
+const childUpdateRef = ref()
 interface DataRes {
     id: string,
-    key: string,
-    value: string;
-    active: boolean,
+    name: string;
     objectApply: string,
     objectTransfer: string,
     noteMe: string,
     noteNoMe: string,
+    status: string,
 }
-const showDialog = ref("chim non")
-const showDialog1 = ref(true)
 const tableData = ref<Array<DataRes>>([])
 function createTranferTargetMethod() {
-    // showDialog.value = true
-    childComponentRef.value.initialMethod()
+    childCreateRef.value.initialMethod()
 }
-function dialogCloseCreateMethod(data: any) {
-    // alert("close method: " + data)
-    // showDialog.value = false;
+function dialogCloseCreateMethod() {
+    getDataInitial()
 }
-function handleClick(row: DataRes) {
-   alert(row.id)
+function editClick(row: DataRes) {
+    childUpdateRef.value.initialMethod(row)
+}
+function deleteClick(id: string) {
+    ElMessageBox.confirm(
+        "Bạn có chắc chắn muốn xóa mục đích này không?", "Thông báo",
+        {
+            confirmButtonText: 'OK',
+            cancelButtonText: 'Hủy',
+            type: 'warning',
+        }).then(() => {
+            httpbe.delete(`/transfer-target/${id}`).then((resp) => {
+                getDataInitial()
+                ElMessage.success({
+                    message: resp.data.message,
+                })
+            })
+        }).catch(err => {
+            console.log(err.data.message)
+        })
+
 }
 function getDataInitial() {
     httpbe.get("/transfer-target").then((resp) => {
         tableData.value = resp.data.payload;
-    });
+    }).catch(err => {
+        console.log(err.data.message)
+    })
 }
 function fetchData() {
     getDataInitial()

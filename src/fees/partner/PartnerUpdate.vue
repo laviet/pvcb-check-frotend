@@ -1,5 +1,5 @@
 <template>
-    <el-dialog v-model="dialogVisible" title="Tạo đối tác" width="700px" :before-close="closeMethod"
+    <el-dialog v-model="dialogVisible" title="Sửa đối tác" width="700px" :before-close="closeMethod"
         :close-on-click-modal="false">
         <el-form ref="formRef" :model="inputForm" :rules="rulesData" label-width="140px" class="demo-ruleForm"
             label-position="left" style="margin-bottom: -30px;">
@@ -18,7 +18,6 @@
         </el-form>
         <template #footer>
             <span class="dialog-footer">
-                <el-checkbox v-model="createOther" label="Tạo thêm" style="margin-right: 15px" />
                 <el-button type="danger" @click="closeMethod()">Hủy</el-button>
                 <el-button type="primary" :loading="loaddingButton" @click="submitForm()">OK</el-button>
             </span>
@@ -35,12 +34,12 @@ const formRef = ref<FormInstance>();
 const emit = defineEmits(['closeDialog'])
 const dialogVisible = ref(false);
 const loaddingButton = ref(false);
-const createOther = ref(false);
 
-const inputForm = reactive({
+const inputForm = ref({
+    id: "",
     name: "",
     note: "",
-    status: ""
+    status: "",
 })
 const rulesData = reactive<FormRules>({
     name: [{ required: true, message: "Thông tin không được để trống", trigger: 'change' }]
@@ -58,29 +57,19 @@ function resetForm() {
     if (!formEl) return
     formEl.resetFields()
 }
-function initialMethod() {
-    createOther.value = false;
-    dialogVisible.value = true;
-}
 function submitForm() {
     let formEl = formRef.value;
     if (!formEl) return;
     formEl.validate((valid) => {
         if (valid) {
             loaddingButton.value = true;
-            httpbe.post(`/partner`, inputForm).then((resp) => {
+            httpbe.put(`/partner`, inputForm.value).then((resp) => {
                 ElMessage.success(
                     resp.data.message,
                 );
-                if (createOther.value) {
-                    setTimeout(() => {
-                        resetForm();
-                    }, 500);
-                } else {
-                    setTimeout(() => {
-                        closeMethod()
-                    }, 500);
-                }
+                setTimeout(() => {
+                    closeMethod()
+                }, 500);
             }).catch(err => {
                 ElMessage.error(
                     err.data.message,
@@ -93,6 +82,10 @@ function submitForm() {
         }
     });
 
+}
+function initialMethod(row: any) {
+    dialogVisible.value = true;
+    inputForm.value = row;
 }
 
 defineExpose({
