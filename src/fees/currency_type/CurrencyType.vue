@@ -1,11 +1,13 @@
 <template>
     <div style="margin-bottom: 45px">
         <span style="float: right">
-            <el-button type="success" @click="createTranferTargetMethod()">Tạo</el-button>
+            <el-button type="success" @click="childCreateRefMethod()">Tạo</el-button>
         </span>
     </div>
     <el-table :data="tableData" :header-cell-style="tableHeaderColor" border>
-        <el-table-column prop="name" label="Tên mục đích" />
+        <el-table-column prop="name" label="Loại tiền" />
+        <el-table-column prop="note" label="Mô tả" />
+
         <el-table-column label="Đối tượng áp dụng" align="center" width="180px">
             <template #default="scope">
                 <span v-if="scope.row.objectApply == 'all'">Tất cả</span>
@@ -13,10 +15,10 @@
                 <span v-else-if="scope.row.objectApply == 'customerGroup'">Nhóm khách hàng</span>
             </template>
         </el-table-column>
-        <el-table-column label="Đối tượng chuyển tiền" align="center" width="180px">
+        <el-table-column label="Trạng thái" align="center" width="140px">
             <template #default="scope">
-                <span v-if="scope.row.objectTransfer == 'me'">Bản thân</span>
-                <span v-else-if="scope.row.objectTransfer == 'noMe'">Người thân</span>
+                <span v-if="scope.row.status == 'ACTIVE'">Kích hoạt</span>
+                <span v-else-if="scope.row.status == 'INACTIVE'">Bỏ kích hoạt</span>
             </template>
         </el-table-column>
         <el-table-column label="Thao tác" fixed="right" width="140" align="center">
@@ -27,15 +29,9 @@
                 </el-button>
             </template>
         </el-table-column>
-        <el-table-column label="Trạng thái" align="center" width="140px">
-            <template #default="scope">
-                <span v-if="scope.row.status == 'ACTIVE'">Kích hoạt</span>
-                <span v-else-if="scope.row.status == 'INACTIVE'">Bỏ kích hoạt</span>
-            </template>
-        </el-table-column>
     </el-table>
-    <TransferTargetCreate ref="childCreateRef" @closeDialog="dialogCloseCreateMethod" />
-    <TransferTargetUpdate ref="childUpdateRef" @closeDialog="dialogCloseCreateMethod" />
+    <CurrencyTypeCreate ref="childCreateRef" @closeDialog="dialogCloseCreateMethod" />
+    <CurrencyTypeUpdate ref="childUpdateRef" @closeDialog="dialogCloseCreateMethod" />
 </template>
 
 <script lang="ts" setup>
@@ -43,21 +39,19 @@ import httpbe from "@/http-fees";
 import { reactive, ref, onMounted, watch, toRefs, vModelRadio, provide } from "vue";
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { tableHeaderColor } from "@/functionCommon/CommonFun"
-import TransferTargetCreate from './TransferTargetCreate.vue'
-import TransferTargetUpdate from './TransferTargetUpdate.vue'
+import CurrencyTypeCreate from './CurrencyTypeCreate.vue'
+import CurrencyTypeUpdate from './CurrencyTypeUpdate.vue'
 const childCreateRef = ref()
 const childUpdateRef = ref()
 interface DataRes {
     id: string,
-    name: string;
+    name: string,
     objectApply: string,
-    objectTransfer: string,
-    noteMe: string,
-    noteNoMe: string,
-    status: string,
+    note: string;
+    status: string;
 }
 const tableData = ref<Array<DataRes>>([])
-function createTranferTargetMethod() {
+function childCreateRefMethod() {
     childCreateRef.value.initialMethod()
 }
 function dialogCloseCreateMethod() {
@@ -74,7 +68,7 @@ function deleteClick(id: string) {
             cancelButtonText: 'Hủy',
             type: 'warning',
         }).then(() => {
-            httpbe.delete(`/transfer-target/${id}`).then((resp) => {
+            httpbe.delete(`/partner/${id}`).then((resp) => {
                 getDataInitial()
                 ElMessage.success({
                     message: resp.data.message,
@@ -86,7 +80,7 @@ function deleteClick(id: string) {
 
 }
 function getDataInitial() {
-    httpbe.get("/transfer-target").then((resp) => {
+    httpbe.get("/currency-type").then((resp) => {
         tableData.value = resp.data.payload;
     }).catch(err => {
         console.log(err.data.message)

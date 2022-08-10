@@ -53,7 +53,7 @@ function editClick(row: DataRes) {
 }
 function deleteClick(id: string) {
     ElMessageBox.confirm(
-        "Bạn có chắc chắn muốn xóa đối tác này không?", "Thông báo",
+        "Bạn có chắc chắn muốn xóa không?", "Thông báo",
         {
             confirmButtonText: 'OK',
             cancelButtonText: 'Hủy',

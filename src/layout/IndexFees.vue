@@ -18,7 +18,12 @@
             <router-link to="/fees/transfer-target" class="router-link-class">
                 <el-menu-item index="1-4-1">Mục đích chuyển tiền</el-menu-item>
             </router-link>
-            <el-menu-item index="1-4-2">Danh sách tiền tệ</el-menu-item>
+            <router-link to="/fees/transfer-limit" class="router-link-class">
+                <el-menu-item index="1-4-2">Hạn mức chuyển tiền</el-menu-item>
+            </router-link>
+             <router-link to="/fees/currency-type" class="router-link-class">
+            <el-menu-item index="1-4-3">Danh sách tiền tệ</el-menu-item>
+            </router-link>
         </el-sub-menu>
         <el-sub-menu index="2">
             <template #title>

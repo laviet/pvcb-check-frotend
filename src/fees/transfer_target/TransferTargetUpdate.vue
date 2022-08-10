@@ -1,6 +1,6 @@
 <template>
     <el-dialog v-model="dialogVisible" title="Sửa mục đích" width="700px" :before-close="closeMethod"
-        :close-on-click-modal="false">
+        :close-on-click-modal="false" top="4vh"> 
         <el-form ref="formRef" :model="inputForm" :rules="rulesData" label-width="160px" class="demo-ruleForm"
             label-position="left" style="margin-bottom: -30px;">
             <el-form-item label="Tên mục đích" prop="name">
@@ -35,7 +35,7 @@
         <template #footer>
             <span class="dialog-footer">
                 <el-button type="danger" @click="closeMethod()">Hủy</el-button>
-                <el-button type="primary" :loading="loaddingButton" @click="submitForm()">OK</el-button>
+                <el-button type="primary" :loading="loaddingButton" @click="submitForm()">Lưu</el-button>
             </span>
         </template>
     </el-dialog>

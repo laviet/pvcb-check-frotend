@@ -1,19 +1,32 @@
 <template>
-    <el-dialog v-model="dialogVisible" title="Sửa đối tác" width="700px" :before-close="closeMethod"
+    <el-dialog v-model="dialogVisible" title="Sửa hạn mức" width="700px" :before-close="closeMethod"
         :close-on-click-modal="false">
         <el-form ref="formRef" :model="inputForm" :rules="rulesData" label-width="140px" class="demo-ruleForm"
             label-position="left" style="margin-bottom: -30px;">
-            <el-form-item label="Tên đối tác" prop="name">
+            <el-form-item label="Tên hạn mức" prop="name">
                 <el-input v-model="inputForm.name"></el-input>
             </el-form-item>
-            <el-form-item label="Mô tả" prop="note">
-                <el-input type="textarea" rows="5" v-model="inputForm.note"></el-input>
-            </el-form-item>
-            <el-form-item label="Trạng thái" prop="status">
-                <el-radio-group v-model="inputForm.status">
-                    <el-radio label="ACTIVE">Kích hoạt</el-radio>
-                    <el-radio label="INACTIVE">Bỏ kích hoạt</el-radio>
+            <el-form-item label="Loại hạn mức" prop="type">
+                <el-radio-group v-model="inputForm.type">
+                    <el-radio label="unit">Lần chuyển</el-radio>
+                    <el-radio label="people">Người chuyển</el-radio>
+                    <el-radio label="time">Thời gian</el-radio>
                 </el-radio-group>
+            </el-form-item>
+            <el-form-item label="Hạn mức" prop="money">
+                <el-input type="number" v-model="inputForm.money">
+                </el-input>
+                <!-- <ElCurrencyInput v-model="inputForm.money" :options="formatCurrencyInputVND()" /> -->
+            </el-form-item>
+            <el-form-item label="Tối thiểu/lần" prop="moneyMin">
+                <el-input type="number" v-model="inputForm.moneyMin">
+                </el-input>
+                <!-- <ElCurrencyInput v-model="inputForm.moneyMin" :options="formatCurrencyInputVND()" /> -->
+            </el-form-item>
+            <el-form-item label="Tối đa/lần" prop="moneyMax">
+                <el-input type="number" v-model="inputForm.moneyMax">
+                </el-input>
+                <!-- <ElCurrencyInput v-model="inputForm.moneyMax" :options="formatCurrencyInputVND()" /> -->
             </el-form-item>
         </el-form>
         <template #footer>
@@ -38,8 +51,10 @@ const loaddingButton = ref(false);
 const inputForm = ref({
     id: "",
     name: "",
-    note: "",
-    status: "",
+    type: "",
+    money: "",
+    moneyMin: "",
+    moneyMax: "",
 })
 const rulesData = reactive<FormRules>({
     name: [{ required: true, message: "Thông tin không được để trống", trigger: 'change' }]
@@ -63,7 +78,7 @@ function submitForm() {
     formEl.validate((valid) => {
         if (valid) {
             loaddingButton.value = true;
-            httpbe.put(`/partner`, inputForm.value).then((resp) => {
+            httpbe.put(`/transfer-limit`, inputForm.value).then((resp) => {
                 ElMessage.success(
                     resp.data.message,
                 );

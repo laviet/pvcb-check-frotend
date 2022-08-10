@@ -1,22 +1,34 @@
 <template>
     <div style="margin-bottom: 45px">
         <span style="float: right">
-            <el-button type="success" @click="createTranferTargetMethod()">Tạo</el-button>
+            <el-button type="success" @click="childCreateRefMethod()">Tạo</el-button>
         </span>
     </div>
     <el-table :data="tableData" :header-cell-style="tableHeaderColor" border>
-        <el-table-column prop="name" label="Tên mục đích" />
-        <el-table-column label="Đối tượng áp dụng" align="center" width="180px">
+        <el-table-column prop="name" label="Tên hạn mức" />
+        <el-table-column label="Loại hạn mức" align="center" width="140px">
             <template #default="scope">
-                <span v-if="scope.row.objectApply == 'all'">Tất cả</span>
-                <span v-else-if="scope.row.objectApply == 'customer'">Khách hàng</span>
-                <span v-else-if="scope.row.objectApply == 'customerGroup'">Nhóm khách hàng</span>
+                <span v-if="scope.row.type == 'unit'">Lần chuyển</span>
+                <span v-else-if="scope.row.type == 'people'">Người chuyển</span>
+                <span v-else-if="scope.row.type == 'time'">Thời gian</span>
             </template>
         </el-table-column>
-        <el-table-column label="Đối tượng chuyển tiền" align="center" width="180px">
+        <el-table-column label="Hạn mức" align="right" width="140px">
             <template #default="scope">
-                <span v-if="scope.row.objectTransfer == 'me'">Bản thân</span>
-                <span v-else-if="scope.row.objectTransfer == 'noMe'">Người thân</span>
+                <span v-if="scope.row.money == null"></span>
+                <span v-else>{{ formatNumber(scope.row.money) }}</span>
+            </template>
+        </el-table-column>
+        <el-table-column label="Tối thiểu/lần" align="right" width="140px">
+            <template #default="scope">
+                <span v-if="scope.row.moneyMin == null"></span>
+                <span v-else>{{ formatNumber(scope.row.moneyMin) }}</span>
+            </template>
+        </el-table-column>
+        <el-table-column label="Tối đa/lần" align="right" width="140px">
+            <template #default="scope">
+                <span v-if="scope.row.moneyMax == null"></span>
+                <span v-else>{{ formatNumber(scope.row.moneyMax) }}</span>
             </template>
         </el-table-column>
         <el-table-column label="Thao tác" fixed="right" width="140" align="center">
@@ -27,15 +39,9 @@
                 </el-button>
             </template>
         </el-table-column>
-        <el-table-column label="Trạng thái" align="center" width="140px">
-            <template #default="scope">
-                <span v-if="scope.row.status == 'ACTIVE'">Kích hoạt</span>
-                <span v-else-if="scope.row.status == 'INACTIVE'">Bỏ kích hoạt</span>
-            </template>
-        </el-table-column>
     </el-table>
-    <TransferTargetCreate ref="childCreateRef" @closeDialog="dialogCloseCreateMethod" />
-    <TransferTargetUpdate ref="childUpdateRef" @closeDialog="dialogCloseCreateMethod" />
+    <TransferLimitCreate ref="childCreateRef" @closeDialog="dialogCloseCreateMethod" />
+    <TransferLimitUpdate ref="childUpdateRef" @closeDialog="dialogCloseCreateMethod" />
 </template>
 
 <script lang="ts" setup>
@@ -43,21 +49,21 @@ import httpbe from "@/http-fees";
 import { reactive, ref, onMounted, watch, toRefs, vModelRadio, provide } from "vue";
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { tableHeaderColor } from "@/functionCommon/CommonFun"
-import TransferTargetCreate from './TransferTargetCreate.vue'
-import TransferTargetUpdate from './TransferTargetUpdate.vue'
+import { formatNumber } from "@/functionCommon/CommonFun"
+import TransferLimitCreate from './TransferLimitCreate.vue'
+import TransferLimitUpdate from './TransferLimitUpdate.vue'
 const childCreateRef = ref()
 const childUpdateRef = ref()
 interface DataRes {
     id: string,
-    name: string;
-    objectApply: string,
-    objectTransfer: string,
-    noteMe: string,
-    noteNoMe: string,
-    status: string,
+    name: string,
+    type: string,
+    money: number,
+    moneyMin: number,
+    moneyMax: number,
 }
 const tableData = ref<Array<DataRes>>([])
-function createTranferTargetMethod() {
+function childCreateRefMethod() {
     childCreateRef.value.initialMethod()
 }
 function dialogCloseCreateMethod() {
@@ -74,7 +80,7 @@ function deleteClick(id: string) {
             cancelButtonText: 'Hủy',
             type: 'warning',
         }).then(() => {
-            httpbe.delete(`/transfer-target/${id}`).then((resp) => {
+            httpbe.delete(`/transfer-limit/${id}`).then((resp) => {
                 getDataInitial()
                 ElMessage.success({
                     message: resp.data.message,
@@ -86,7 +92,7 @@ function deleteClick(id: string) {
 
 }
 function getDataInitial() {
-    httpbe.get("/transfer-target").then((resp) => {
+    httpbe.get("/transfer-limit").then((resp) => {
         tableData.value = resp.data.payload;
     }).catch(err => {
         console.log(err.data.message)

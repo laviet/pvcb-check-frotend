@@ -83,6 +83,16 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('@/fees/transfer_target/TransferTarget.vue')
       },
       {
+        path: 'transfer-limit',
+        name: "transferLimitNam",
+        component: () => import('@/fees/transfer_limit/TransferLimit.vue')
+      },
+      {
+        path: 'currency-type',
+        name: "currencyTypeName",
+        component: () => import('@/fees/currency_type/CurrencyType.vue')
+      },
+      {
         path: 'partner',
         name: "partnerName",
         component: () => import('@/fees/partner/PartnerData.vue')
