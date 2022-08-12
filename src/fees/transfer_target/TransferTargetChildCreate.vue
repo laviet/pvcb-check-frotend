@@ -3,7 +3,7 @@
         :close-on-click-modal="false" top="4vh">
         <el-form ref="formRef" :model="inputForm" :rules="rulesData" label-width="160px" class="demo-ruleForm"
             label-position="left">
-            <el-form-item label="Tên nhóm mục đích" prop="name">
+            <el-form-item label="Tên mục đích" prop="name">
                 <el-input v-model="inputForm.name"></el-input>
             </el-form-item>
             <el-form-item label="Trạng thái" prop="status">
@@ -11,6 +11,21 @@
                     <el-radio label="ACTIVE">Kích hoạt</el-radio>
                     <el-radio label="INACTIVE">Bỏ kích hoạt</el-radio>
                 </el-radio-group>
+            </el-form-item>
+            <el-form-item label="Đối tượng áp dụng" prop="objectApply">
+                <el-radio-group v-model="inputForm.objectApply">
+                    <el-radio label="all">Tất cả</el-radio>
+                    <el-radio label="customer">Khách hàng</el-radio>
+                    <el-radio label="customerGroup">Nhóm khách hàng</el-radio>
+                </el-radio-group>
+            </el-form-item>
+            <el-form-item label="Danh mục hồ sơ">
+            </el-form-item>
+            <el-form-item label="Đối tượng chuyển tiền (Bản thân)" prop="noteMe" >
+                <el-input type="textarea" rows="4" v-model="inputForm.noteMe" :placeholder="'1. Nội dung 1 \n2. Nội dung 2\n3. Nội dung 3'"></el-input>
+            </el-form-item>
+            <el-form-item :label="'Đối tượng chuyển tiền (Người thân/Người được ủy quyền)'" prop="noteNoMe" >
+                <el-input type="textarea" rows="4" v-model="inputForm.noteNoMe" :placeholder="'1. Nội dung 1 \n2. Nội dung 2\n3. Nội dung 3'"></el-input>
             </el-form-item>
         </el-form>
         <template #footer>
@@ -34,14 +49,19 @@ const emit = defineEmits(['closeDialog'])
 const dialogVisible = ref(false);
 const loaddingButton = ref(false);
 const createOther = ref(false);
+const idTransfer=ref();
 
 const inputForm = reactive({
     name: "",
-    status: "ACTIVE"
+    status: "ACTIVE",
+    objectApply: "",
+    noteMe: "",
+    noteNoMe: "",
 })
 const rulesData = reactive<FormRules>({
     name: [{ required: true, message: "Thông tin không được để trống", trigger: 'change' }],
     status: [{ required: true, message: "Thông tin không được để trống", trigger: 'change' }],
+    objectApply: [{ required: true, message: "Thông tin không được để trống", trigger: 'change' }],
 })
 function closeMethod() {
     dialogVisible.value = false;
@@ -64,7 +84,7 @@ function submitForm() {
     formEl.validate((valid) => {
         if (valid) {
             loaddingButton.value = true;
-            httpbe.post(`/transfer-target`, inputForm).then((resp) => {
+            httpbe.post(`/transfer-target/child/${idTransfer.value}`, inputForm).then((resp) => {
                 ElMessage.success(
                     resp.data.message,
                 );
@@ -90,7 +110,8 @@ function submitForm() {
     });
 
 }
-function initialMethod() {
+function initialMethod(id:string) {
+    idTransfer.value=id
     dialogVisible.value = true;
 }
 

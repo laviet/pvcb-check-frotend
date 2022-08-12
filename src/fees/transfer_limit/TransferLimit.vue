@@ -37,6 +37,8 @@
                 </el-button>
                 <el-button link type="primary" size="small" @click="editClick(scope.row)">Sửa
                 </el-button>
+                <!-- <el-button link type="success" size="small" @click="editClick(scope.row)">Thêm
+                </el-button> -->
             </template>
         </el-table-column>
     </el-table>

@@ -1,22 +1,29 @@
 <template>
-    <el-dialog v-model="dialogVisible" title="Sửa hạn mức" width="700px" :before-close="closeMethod"
+    <el-dialog v-model="dialogVisible" title="Sửa hạn mức" width="750px" :before-close="closeMethod"
         :close-on-click-modal="false">
         <el-form ref="formRef" :model="inputForm" :rules="rulesData" label-width="140px" class="demo-ruleForm"
             label-position="left" style="margin-bottom: -30px;">
             <el-form-item label="Tên hạn mức" prop="name">
                 <el-input v-model="inputForm.name"></el-input>
             </el-form-item>
-            <el-form-item label="Loại hạn mức" prop="type">
-                <el-radio-group v-model="inputForm.type">
-                    <el-radio label="unit">Lần chuyển</el-radio>
-                    <el-radio label="people">Người chuyển</el-radio>
-                    <el-radio label="time">Thời gian</el-radio>
-                </el-radio-group>
-            </el-form-item>
             <el-form-item label="Hạn mức" prop="money">
                 <el-input type="number" v-model="inputForm.money">
                 </el-input>
                 <!-- <ElCurrencyInput v-model="inputForm.money" :options="formatCurrencyInputVND()" /> -->
+            </el-form-item>
+            <el-form-item label="Loại hạn mức" prop="type">
+                <el-radio-group v-model="inputForm.type">
+                    <el-radio label="unit">Lần chuyển</el-radio>
+                    <el-radio label="people">Người</el-radio>
+                     <el-radio label="peopleTime">Người/Năm</el-radio>
+                    <el-radio label="time">Thời gian</el-radio>
+                    <el-select v-if="inputForm.type == 'time'" v-model="inputForm.typeDetail" style="width: 100px"
+                        placeholder="Chọn">
+                        <el-option label="Năm" value="a" />
+                        <el-option label="Quỹ" value="b" />
+                        <el-option label="Tháng" value="c" />
+                    </el-select>
+                </el-radio-group>
             </el-form-item>
             <el-form-item label="Tối thiểu/lần" prop="moneyMin">
                 <el-input type="number" v-model="inputForm.moneyMin">
@@ -52,9 +59,10 @@ const inputForm = ref({
     id: "",
     name: "",
     type: "",
-    money: "",
-    moneyMin: "",
-    moneyMax: "",
+    typeDetail: "",
+    money: Number(),
+    moneyMin: Number(),
+    moneyMax: Number(),
 })
 const rulesData = reactive<FormRules>({
     name: [{ required: true, message: "Thông tin không được để trống", trigger: 'change' }]

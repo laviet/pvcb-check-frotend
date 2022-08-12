@@ -1,5 +1,5 @@
 <template>
-    <el-dialog v-model="dialogVisible" title="Sửa nhóm mục đích chuyển tiền" width="700px" :before-close="closeMethod"
+    <el-dialog v-model="dialogVisible" title="Sửa mục đích chuyển tiền" width="700px" :before-close="closeMethod"
         :close-on-click-modal="false" top="4vh"> 
         <el-form ref="formRef" :model="inputForm" :rules="rulesData" label-width="160px" class="demo-ruleForm"
             label-position="left" style="margin-bottom: -30px;">
@@ -11,6 +11,19 @@
                     <el-radio label="ACTIVE">Kích hoạt</el-radio>
                     <el-radio label="INACTIVE">Bỏ kích hoạt</el-radio>
                 </el-radio-group>
+            </el-form-item>
+            <el-form-item label="Đối tượng áp dụng" prop="objectApply">
+                <el-radio-group v-model="inputForm.objectApply">
+                    <el-radio label="all">Tất cả</el-radio>
+                    <el-radio label="customer">Khách hàng</el-radio>
+                    <el-radio label="customerGroup">Nhóm khách hàng</el-radio>
+                </el-radio-group>
+            </el-form-item>
+            <el-form-item label="Hồ sơ (Bản thân)" prop="noteMe">
+                <el-input type="textarea" rows="4" v-model="inputForm.noteMe"></el-input>
+            </el-form-item>
+            <el-form-item label="Hồ sơ (Người thân)" prop="noteNoMe">
+                <el-input type="textarea" rows="4" v-model="inputForm.noteNoMe"></el-input>
             </el-form-item>
         </el-form>
         <template #footer>
@@ -36,10 +49,14 @@ const inputForm = ref({
     id: "",
     name: "",
     status: "",
+    objectApply: "",
+    noteMe: "",
+    noteNoMe: "",
 })
 const rulesData = reactive<FormRules>({
    name: [{ required: true, message: "Thông tin không được để trống", trigger: 'change' }],
     status: [{ required: true, message: "Thông tin không được để trống", trigger: 'change' }],
+    objectApply: [{ required: true, message: "Thông tin không được để trống", trigger: 'change' }],
 })
 function closeMethod() {
     dialogVisible.value = false;
@@ -60,7 +77,7 @@ function submitForm() {
     formEl.validate((valid) => {
         if (valid) {
             loaddingButton.value = true;
-            httpbe.put(`/transfer-target`, inputForm.value).then((resp) => {
+            httpbe.put(`/transfer-target/child`, inputForm.value).then((resp) => {
                 ElMessage.success(
                     resp.data.message,
                 );

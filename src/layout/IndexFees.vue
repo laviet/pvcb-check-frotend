@@ -30,10 +30,13 @@
                 <el-icon>
                     <User />
                 </el-icon>
-                <span>Danh sách đối tác</span>
+                <span>Đối tác</span>
             </template>
             <router-link to="/fees/partner" class="router-link-class">
-                <el-menu-item index="2-1">Đối tác</el-menu-item>
+                <el-menu-item index="2-1">Danh sách đối tác</el-menu-item>
+            </router-link>
+            <router-link to="/fees/partner-config" class="router-link-class">
+                <el-menu-item index="2-2">Cấu hình đối tác</el-menu-item>
             </router-link>
         </el-sub-menu>
     </el-menu>

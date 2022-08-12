@@ -1,16 +1,25 @@
 <template>
     <div style="margin-bottom: 45px">
+        <el-page-header content="Chi tiết" @back="goBackMethod()" style="float: left" />
         <span style="float: right">
             <el-button type="success" @click="createTranferTargetMethod()">Tạo</el-button>
         </span>
     </div>
     <el-table :data="tableData" :header-cell-style="tableHeaderColor" border>
-        <el-table-column prop="name" label="Tên nhóm mục đích" />
-        <el-table-column label="Mục đích">
+        <el-table-column prop="name" label="Tên mục đích" />
+        <el-table-column label="Đối tượng áp dụng" align="center" width="180px">
             <template #default="scope">
-                <span v-for="(item, index) in scope.row.transferTargetChildList" :key="item.id">
-                    {{index+1}}, {{ item.name }}<br/>
-                </span>
+                <span v-if="scope.row.objectApply == 'all'">Tất cả</span>
+                <span v-else-if="scope.row.objectApply == 'customer'">Khách hàng</span>
+                <span v-else-if="scope.row.objectApply == 'customerGroup'">Nhóm khách hàng</span>
+            </template>
+        </el-table-column>
+        <el-table-column label="Thao tác" fixed="right" width="140" align="center">
+            <template #default="scope">
+                <el-button link type="danger" size="small" @click="deleteClick(scope.row.id)">Xóa
+                </el-button>
+                <el-button link type="primary" size="small" @click="editClick(scope.row)">Sửa
+                </el-button>
             </template>
         </el-table-column>
         <el-table-column label="Trạng thái" align="center" width="140px">
@@ -19,31 +28,25 @@
                 <span v-else-if="scope.row.status == 'INACTIVE'">Bỏ kích hoạt</span>
             </template>
         </el-table-column>
-        <el-table-column label="Thao tác" fixed="right" width="160" align="center">
-            <template #default="scope">
-                <el-button link type="danger" size="small" @click="deleteClick(scope.row.id)">Xóa
-                </el-button>
-                <el-button link type="primary" size="small" @click="editClick(scope.row)">Sửa
-                </el-button>
-                <el-button link type="success" size="small" @click="detailClick(scope.row.id)">Chi tiết
-                </el-button>
-            </template>
-        </el-table-column>
     </el-table>
-    <TransferTargetCreate ref="childCreateRef" @closeDialog="dialogCloseCreateMethod" />
-    <TransferTargetUpdate ref="childUpdateRef" @closeDialog="dialogCloseCreateMethod" />
+    <TransferTargetChildCreate ref="childCreateRef" @closeDialog="dialogCloseCreateMethod" />
+    <TransferTargetChildUpdate ref="childUpdateRef" @closeDialog="dialogCloseCreateMethod" />
 </template>
 
 <script lang="ts" setup>
 import httpbe from "@/http-fees";
-import router from "@/router";
+
 import { reactive, ref, onMounted, watch, toRefs, vModelRadio, provide } from "vue";
 import { ElMessage, ElMessageBox } from 'element-plus'
+import router from "@/router";
+import { useRoute } from "vue-router";
 import { tableHeaderColor } from "@/functionCommon/CommonFun"
-import TransferTargetCreate from './TransferTargetCreate.vue'
-import TransferTargetUpdate from './TransferTargetUpdate.vue'
+import TransferTargetChildCreate from './TransferTargetChildCreate.vue'
+import TransferTargetChildUpdate from './TransferTargetChildUpdate.vue'
 const childCreateRef = ref()
 const childUpdateRef = ref()
+const route = useRoute();
+const idTransfer = route.params.id;
 interface DataRes {
     id: string,
     name: string;
@@ -54,7 +57,7 @@ interface DataRes {
 }
 const tableData = ref<Array<DataRes>>([])
 function createTranferTargetMethod() {
-    childCreateRef.value.initialMethod()
+    childCreateRef.value.initialMethod(idTransfer)
 }
 function dialogCloseCreateMethod() {
     getDataInitial()
@@ -62,10 +65,9 @@ function dialogCloseCreateMethod() {
 function editClick(row: DataRes) {
     childUpdateRef.value.initialMethod(row)
 }
-function detailClick(id: string) {
+function goBackMethod() {
     router.push({
-        name: "transferTargetDetailName",
-        params: { id: id }
+        name: "transferTargetName",
     });
 }
 function deleteClick(id: string) {
@@ -88,7 +90,7 @@ function deleteClick(id: string) {
 
 }
 function getDataInitial() {
-    httpbe.get("/transfer-target").then((resp) => {
+    httpbe.get(`/transfer-target/child/${idTransfer}`).then((resp) => {
         tableData.value = resp.data.payload;
     }).catch(err => {
         console.log(err.data.message)
