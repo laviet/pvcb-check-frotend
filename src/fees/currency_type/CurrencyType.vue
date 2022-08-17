@@ -68,14 +68,16 @@ function deleteClick(id: string) {
             cancelButtonText: 'Hủy',
             type: 'warning',
         }).then(() => {
-            httpbe.delete(`/partner/${id}`).then((resp) => {
+            httpbe.delete(`/currency-type/${id}`).then((resp) => {
                 getDataInitial()
                 ElMessage.success({
                     message: resp.data.message,
                 })
+            }).catch(err => {
+                ElMessage.error({
+                    message: err.data.message,
+                })
             })
-        }).catch(err => {
-            console.log(err.data.message)
         })
 
 }

@@ -1,20 +1,34 @@
 <template>
     <el-dialog v-model="dialogVisible" title="Tạo hạn mức" width="750px" :before-close="closeMethod"
-        :close-on-click-modal="false">
+        :close-on-click-modal="false" top="10vh">
         <el-form ref="formRef" :model="inputForm" :rules="rulesData" label-width="140px" class="demo-ruleForm"
             label-position="left" style="margin-bottom: -30px;">
             <el-form-item label="Tên hạn mức" prop="name">
                 <el-input v-model="inputForm.name"></el-input>
             </el-form-item>
+            <el-form-item label="Mục đích" prop="transferTargetChildIdList">
+                <el-select style="width: 270px" v-model="inputForm.transferTargetIdList" multiple
+                    @change="changeTransferTargetMethod()" placeholder="Chọn nhóm mục đích">
+                    <el-option v-for="item in transferTargetList" :key="item.id" :label="item.name" :value="item.id" />
+                </el-select>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <el-select style="width: 270px" v-model="inputForm.transferTargetChildIdList" multiple
+                    placeholder="Chọn mục đích">
+                    <el-option v-for="item in transferTargetChiList" :key="item.id" :label="item.name"
+                        :value="item.id" />
+                </el-select>
+            </el-form-item>
+
             <el-form-item label="Loại hạn mức" prop="type">
                 <el-radio-group v-model="inputForm.type">
                     <el-radio label="unit">Lần chuyển</el-radio>
                     <el-radio label="people">Người</el-radio>
                     <el-radio label="peopleTime">Người/Năm</el-radio>
                     <el-radio label="time">Thời gian</el-radio>
-                    <el-select v-if="inputForm.type == 'time'" v-model="inputForm.typeDetail" style="width: 100px" placeholder="Chọn">
+                    <el-select v-if="inputForm.type == 'time'" v-model="inputForm.typeDetail" style="width: 100px"
+                        placeholder="Chọn">
                         <el-option label="Năm" value="a" />
-                        <el-option label="Quỹ" value="b" />
+                        <el-option label="Quý" value="b" />
                         <el-option label="Tháng" value="c" />
                     </el-select>
                 </el-radio-group>
@@ -24,12 +38,8 @@
                 </el-input>
                 <!-- <ElCurrencyInput v-model="inputForm.money" :options="formatCurrencyInputVND()" /> -->
             </el-form-item>
-            <el-form-item label="Loại tiền tệ">
-                <el-select placeholder="Chọn" style="width: 100%">
-                    <el-option label="USD" value="a" />
-                    <el-option label="EUR" value="b" />
-                    <el-option label="SGP" value="c" />
-                </el-select>
+            <el-form-item label="Loại tiền tệ" prop="moneyType">
+                <el-input v-model="inputForm.moneyType"></el-input>
             </el-form-item>
             <el-form-item label="Tối thiểu/lần" prop="moneyMin">
                 <el-input type="number" v-model="inputForm.moneyMin">
@@ -60,30 +70,45 @@ import { ElMessage } from "element-plus";
 import httpbe from "@/http-fees";
 import ElCurrencyInput from '@/eway/ElCurrencyInput.vue'
 import { formatCurrencyInputVND } from "@/functionCommon/CommonFun"
+import { stringLiteral } from "@babel/types";
 const formRef = ref<FormInstance>();
 const emit = defineEmits(['closeDialog'])
 const dialogVisible = ref(false);
 const loaddingButton = ref(false);
 const createOther = ref(false);
+const transferTargetList = ref<TransferObject[]>([])
+const transferTargetChiList = ref<NameObject[]>([])
 
+interface TransferObject {
+    id: string,
+    name: string,
+    transferTargetChildList: NameObject,
+}
+interface NameObject {
+    id: "",
+    name: "",
+}
 const inputForm = reactive({
     id: "",
     name: "",
     type: "",
-    typeDetail:"",
+    typeDetail: "",
+    moneyType: "",
     money: Number,
     moneyMin: Number,
     moneyMax: Number,
+    transferTargetIdList:[] as any,
+    transferTargetChildIdList: [],
+
 })
-// function formatNumber (num: string) {
-//     return parseFloat(num).toFixed(2)
-//   }
-// function restrictDecimal() {
-//     inputForm.money = inputForm.money.match(/^\d+\.?\d{0,2}/);
-// }
+const currencyTypeList = ref([{
+    id: "",
+    name: "",
+}])
 const rulesData = reactive<FormRules>({
     name: [{ required: true, message: "Thông tin không được để trống", trigger: 'change' }],
-    type: [{ required: true, message: "Thông tin không được để trống", trigger: 'change' }]
+    type: [{ required: true, message: "Thông tin không được để trống", trigger: 'change' }],
+    moneyType: [{ required: true, message: "Thông tin không được để trống", trigger: 'change' }],
 })
 const formatterCurrency = new Intl.NumberFormat("de-DE", {
     style: "currency",
@@ -103,9 +128,16 @@ function resetForm() {
     let formEl = formRef.value;
     if (!formEl) return
     formEl.resetFields()
+    inputForm.transferTargetIdList = []
+}
+function changeTransferTargetMethod() {
+    inputForm.transferTargetChildIdList = []
+    let filterList = transferTargetList.value.filter(x => inputForm.transferTargetIdList.includes(x.id));
+    transferTargetChiList.value = filterList.map(x => x.transferTargetChildList).flat();
 }
 function initialMethod() {
     dialogVisible.value = true;
+    getTransferTargetAddList()
 }
 function submitForm() {
     let formEl = formRef.value;
@@ -137,7 +169,11 @@ function submitForm() {
             })
         }
     });
-
+}
+function getTransferTargetAddList() {
+    httpbe.get(`/transfer-target/add/limit`).then((resp) => {
+        transferTargetList.value = resp.data.payload;
+    })
 }
 
 defineExpose({

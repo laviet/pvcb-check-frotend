@@ -17,6 +17,8 @@
                     <el-option label="F" value="c" />
                 </el-select>
             </el-form-item>
+              <el-form-item label="Loại tiền"></el-form-item>
+              <el-form-item label="Hạn mức"></el-form-item>
         </el-form>
         <template #footer>
             <span class="dialog-footer">

@@ -78,14 +78,16 @@ function deleteClick(id: string) {
             cancelButtonText: 'Hủy',
             type: 'warning',
         }).then(() => {
-            httpbe.delete(`/transfer-target/${id}`).then((resp) => {
+            httpbe.delete(`/transfer-target/child/${id}`).then((resp) => {
                 getDataInitial()
                 ElMessage.success({
                     message: resp.data.message,
                 })
+            }).catch(err => {
+                ElMessage.error({
+                    message: err.data.message,
+                })
             })
-        }).catch(err => {
-            console.log(err.data.message)
         })
 
 }

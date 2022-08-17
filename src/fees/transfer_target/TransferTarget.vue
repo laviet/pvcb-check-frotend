@@ -81,9 +81,11 @@ function deleteClick(id: string) {
                 ElMessage.success({
                     message: resp.data.message,
                 })
+            }).catch(err => {
+                ElMessage.error({
+                    message: err.data.message,
+                })
             })
-        }).catch(err => {
-            console.log(err.data.message)
         })
 
 }

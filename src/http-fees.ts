@@ -15,9 +15,10 @@ apiClient.interceptors.request.use(function (config) {
 })
 //thông tin trả về sau khi gọi api
 apiClient.interceptors.response.use(function (response) {
-  console.log("response 1")
+  console.log("success")
   return response;
 }, function (error) {
+  console.log("error")
   const status = error.response.status;
   //không có quyền truy cập trang này
   if (status == 403) {
@@ -34,7 +35,6 @@ apiClient.interceptors.response.use(function (response) {
     alert("Đường dẫn không tồn tại: " + error.config.url)
     throw null;
   }
-  console.log("response 2")
   throw error.response;
 })
 export default apiClient;

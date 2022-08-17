@@ -4,6 +4,12 @@ export function tableHeaderColor() {
                 color: '#FFFFFF'
         };
 }
+export function tableHeaderColorTwo() {
+        return {
+                background: '#909399',
+                color: '#FFFFFF'
+        };
+}
 export function formatCurrencyInputVND() {
         return {
                 currency: 'VND',

@@ -1,29 +1,44 @@
 <template>
     <el-dialog v-model="dialogVisible" title="Sửa hạn mức" width="750px" :before-close="closeMethod"
-        :close-on-click-modal="false">
+        :close-on-click-modal="false" top="10vh">
         <el-form ref="formRef" :model="inputForm" :rules="rulesData" label-width="140px" class="demo-ruleForm"
             label-position="left" style="margin-bottom: -30px;">
             <el-form-item label="Tên hạn mức" prop="name">
                 <el-input v-model="inputForm.name"></el-input>
+            </el-form-item>
+            <el-form-item label="Mục đích" prop="transferTargetChildIdList">
+                <el-select style="width: 270px" v-model="inputForm.transferTargetIdList" multiple
+                    @change="changeTransferTargetMethod(true)" placeholder="Chọn nhóm mục đích">
+                    <el-option v-for="item in transferTargetList" :key="item.id" :label="item.name" :value="item.id" />
+                </el-select>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <el-select style="width: 270px" v-model="inputForm.transferTargetChildIdList" multiple
+                    placeholder="Chọn mục đích">
+                    <el-option v-for="item in transferTargetChiList" :key="item.id" :label="item.name"
+                        :value="item.id" />
+                </el-select>
+            </el-form-item>
+            <el-form-item label="Loại hạn mức" prop="type">
+                <el-radio-group v-model="inputForm.type">
+                    <el-radio label="unit">Lần chuyển</el-radio>
+                    <el-radio label="people">Người</el-radio>
+                    <el-radio label="peopleTime">Người/Năm</el-radio>
+                    <el-radio label="time">Thời gian</el-radio>
+                    <el-select v-if="inputForm.type == 'time'" v-model="inputForm.typeDetail" style="width: 100px"
+                        placeholder="Chọn">
+                        <el-option label="Năm" value="a" />
+                        <el-option label="Quý" value="b" />
+                        <el-option label="Tháng" value="c" />
+                    </el-select>
+                </el-radio-group>
             </el-form-item>
             <el-form-item label="Hạn mức" prop="money">
                 <el-input type="number" v-model="inputForm.money">
                 </el-input>
                 <!-- <ElCurrencyInput v-model="inputForm.money" :options="formatCurrencyInputVND()" /> -->
             </el-form-item>
-            <el-form-item label="Loại hạn mức" prop="type">
-                <el-radio-group v-model="inputForm.type">
-                    <el-radio label="unit">Lần chuyển</el-radio>
-                    <el-radio label="people">Người</el-radio>
-                     <el-radio label="peopleTime">Người/Năm</el-radio>
-                    <el-radio label="time">Thời gian</el-radio>
-                    <el-select v-if="inputForm.type == 'time'" v-model="inputForm.typeDetail" style="width: 100px"
-                        placeholder="Chọn">
-                        <el-option label="Năm" value="a" />
-                        <el-option label="Quỹ" value="b" />
-                        <el-option label="Tháng" value="c" />
-                    </el-select>
-                </el-radio-group>
+            <el-form-item label="Loại tiền tệ" prop="moneyType">
+                <el-input v-model="inputForm.moneyType"></el-input>
             </el-form-item>
             <el-form-item label="Tối thiểu/lần" prop="moneyMin">
                 <el-input type="number" v-model="inputForm.moneyMin">
@@ -54,18 +69,39 @@ const formRef = ref<FormInstance>();
 const emit = defineEmits(['closeDialog'])
 const dialogVisible = ref(false);
 const loaddingButton = ref(false);
+const transferTargetList = ref<TransferObject[]>([])
+const transferTargetChiList = ref<NameObject[]>([])
+
+interface TransferObject {
+    id: string,
+    name: string,
+    transferTargetChildList: NameObject,
+}
+interface NameObject {
+    id: "",
+    name: "",
+}
 
 const inputForm = ref({
     id: "",
     name: "",
     type: "",
     typeDetail: "",
+    moneyType: "",
     money: Number(),
     moneyMin: Number(),
     moneyMax: Number(),
+    transferTargetIdList: [] as any,
+    transferTargetChildIdList: [],
 })
+const currencyTypeList = ref([{
+    id: "",
+    name: "",
+}])
 const rulesData = reactive<FormRules>({
-    name: [{ required: true, message: "Thông tin không được để trống", trigger: 'change' }]
+    name: [{ required: true, message: "Thông tin không được để trống", trigger: 'change' }],
+    type: [{ required: true, message: "Thông tin không được để trống", trigger: 'change' }],
+    moneyType: [{ required: true, message: "Thông tin không được để trống", trigger: 'change' }],
 })
 function closeMethod() {
     dialogVisible.value = false;
@@ -79,6 +115,13 @@ function resetForm() {
     let formEl = formRef.value;
     if (!formEl) return
     formEl.resetFields()
+}
+function changeTransferTargetMethod(changeStaus: boolean) {
+    if (changeStaus) {
+        inputForm.value.transferTargetChildIdList = []
+    }
+    let filterList = transferTargetList.value.filter(x => inputForm.value.transferTargetIdList.includes(x.id));
+    transferTargetChiList.value = filterList.map(x => x.transferTargetChildList).flat();
 }
 function submitForm() {
     let formEl = formRef.value;
@@ -104,11 +147,30 @@ function submitForm() {
             })
         }
     });
-
 }
 function initialMethod(row: any) {
     dialogVisible.value = true;
-    inputForm.value = row;
+    fetchData(row.id)
+}
+async function getTransferTargetAddList() {
+    await httpbe.get(`/transfer-target/add/limit`).then((resp) => {
+        transferTargetList.value = resp.data.payload;
+    })
+}
+async function getTransferLimitById(id: string) {
+    await httpbe.get(`/transfer-limit/${id}`).then((resp) => {
+        inputForm.value = resp.data.payload
+    }).catch(err => {
+        ElMessage.error(
+            err.data.message,
+        );
+    })
+}
+async function fetchData(id: string) {
+    await Promise.all([
+        getTransferTargetAddList(), getTransferLimitById(id),
+    ])
+    changeTransferTargetMethod(false)
 }
 
 defineExpose({
