@@ -98,6 +98,11 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('@/fees/currency_type/CurrencyType.vue')
       },
       {
+        path: 'exchange-rate',
+        name: "exchangeRateName",
+        component: () => import('@/fees/exchange_rate/ExchangeRate.vue')
+      },
+      {
         path: 'partner',
         name: "partnerName",
         component: () => import('@/fees/partner/PartnerData.vue')

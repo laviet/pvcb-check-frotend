@@ -14,8 +14,8 @@
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <el-select style="width: 270px" v-model="inputForm.transferTargetChildIdList" multiple
                     placeholder="Chọn mục đích">
-                    <el-option v-for="item in transferTargetChiList" :key="item.id" :label="item.name"
-                        :value="item.id" />
+                    <el-option v-for="item in transferTargetChiList" :key="item.id" :value="item.id" :label="item.name+'- '+item.transferTarget.name">
+                    </el-option>
                 </el-select>
             </el-form-item>
 
@@ -77,12 +77,18 @@ const dialogVisible = ref(false);
 const loaddingButton = ref(false);
 const createOther = ref(false);
 const transferTargetList = ref<TransferObject[]>([])
-const transferTargetChiList = ref<NameObject[]>([])
+const transferTargetChiList = ref<NameDataObject[]>([])
 
 interface TransferObject {
     id: string,
     name: string,
-    transferTargetChildList: NameObject,
+    transferTargetChildList: NameDataObject,
+}
+
+interface NameDataObject {
+    id: "",
+    name: "",
+    transferTarget: NameObject,
 }
 interface NameObject {
     id: "",
@@ -97,7 +103,7 @@ const inputForm = reactive({
     money: Number,
     moneyMin: Number,
     moneyMax: Number,
-    transferTargetIdList:[] as any,
+    transferTargetIdList: [] as any,
     transferTargetChildIdList: [],
 
 })

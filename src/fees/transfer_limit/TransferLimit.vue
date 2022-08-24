@@ -40,7 +40,7 @@
                 <span v-else>{{ formatNumber(scope.row.moneyMax) }}</span>
             </template>
         </el-table-column>
-        <el-table-column label="Thao tác" fixed="right" width="120" align="center">
+        <el-table-column label="Thao tác" fixed="right" width="140" align="center">
             <template #default="scope">
                 <el-button link type="danger" size="small" @click="deleteClick(scope.row.id)">Xóa
                 </el-button>
@@ -53,7 +53,7 @@
     </el-table>
     <TransferLimitCreate ref="childCreateRef" @closeDialog="dialogCloseCreateMethod" />
     <TransferLimitUpdate ref="childUpdateRef" @closeDialog="dialogCloseCreateMethod" />
-    <!-- <TransferLimitAdd ref="childAddRef" @closeDialog="dialogCloseCreateMethod" /> -->
+    <TransferLimitAdd ref="childAddRef" @closeDialog="dialogCloseCreateMethod" />
 </template>
 
 <script lang="ts" setup>
@@ -64,10 +64,10 @@ import { tableHeaderColor } from "@/functionCommon/CommonFun"
 import { formatNumber } from "@/functionCommon/CommonFun"
 import TransferLimitCreate from './TransferLimitCreate.vue'
 import TransferLimitUpdate from './TransferLimitUpdate.vue'
-// import TransferLimitAdd from './TransferLimitAdd.vue'
+import TransferLimitAdd from './TransferLimitAdd.vue'
 const childCreateRef = ref()
 const childUpdateRef = ref()
-// const childAddRef = ref()
+const childAddRef = ref()
 interface DataRes {
     id: string,
     name: string,
@@ -87,9 +87,9 @@ function dialogCloseCreateMethod() {
 function editClick(row: DataRes) {
     childUpdateRef.value.initialMethod(row)
 }
-// function editClick1(row: DataRes) {
-//     childAddRef.value.initialMethod(row)
-// }
+function editClick1(row: DataRes) {
+    childAddRef.value.initialMethod(row)
+}
 function deleteClick(id: string) {
     ElMessageBox.confirm(
         "Bạn có chắc chắn muốn xóa không?", "Thông báo",

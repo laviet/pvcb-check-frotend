@@ -2,7 +2,7 @@
     <el-dialog v-model="dialogVisible" title="Tạo loại tiền" width="700px" :before-close="closeMethod"
         :close-on-click-modal="false">
         <el-form ref="formRef" :model="inputForm" :rules="rulesData" label-width="140px" class="demo-ruleForm"
-            label-position="left" style="margin-bottom: -30px;">
+            label-position="left">
             <el-form-item label="Loại tiền" prop="name">
                 <el-input v-model="inputForm.name"></el-input>
             </el-form-item>

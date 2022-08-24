@@ -5,6 +5,7 @@
         </span>
     </div>
     <el-table :data="tableData" :header-cell-style="tableHeaderColor" border>
+    <el-table-column prop="code" label="Mã đối tác" width="110" align="center"/>
         <el-table-column prop="name" label="Tên đối tác" />
         <el-table-column prop="note" label="Mô tả" />
         <el-table-column label="Trạng thái" align="center" width="140px">

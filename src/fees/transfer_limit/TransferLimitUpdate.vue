@@ -8,14 +8,15 @@
             </el-form-item>
             <el-form-item label="Mục đích" prop="transferTargetChildIdList">
                 <el-select style="width: 270px" v-model="inputForm.transferTargetIdList" multiple
-                    @change="changeTransferTargetMethod(true)" placeholder="Chọn nhóm mục đích">
+                    @change="changeTransferTargetMethod()" placeholder="Chọn nhóm mục đích">
                     <el-option v-for="item in transferTargetList" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <el-select style="width: 270px" v-model="inputForm.transferTargetChildIdList" multiple
                     placeholder="Chọn mục đích">
-                    <el-option v-for="item in transferTargetChiList" :key="item.id" :label="item.name"
-                        :value="item.id" />
+                    <el-option v-for="item in transferTargetChiList" :key="item.id" :value="item.id"
+                        :label="item.name + '- ' + item.transferTarget.name">
+                    </el-option>
                 </el-select>
             </el-form-item>
             <el-form-item label="Loại hạn mức" prop="type">
@@ -70,16 +71,21 @@ const emit = defineEmits(['closeDialog'])
 const dialogVisible = ref(false);
 const loaddingButton = ref(false);
 const transferTargetList = ref<TransferObject[]>([])
-const transferTargetChiList = ref<NameObject[]>([])
+const transferTargetChiList = ref<NameDataObject[]>([])
 
 interface TransferObject {
     id: string,
     name: string,
-    transferTargetChildList: NameObject,
+    transferTargetChildList: NameDataObject,
 }
 interface NameObject {
     id: "",
     name: "",
+}
+interface NameDataObject {
+    id: "",
+    name: "",
+    transferTarget: NameObject,
 }
 
 const inputForm = ref({
@@ -116,12 +122,9 @@ function resetForm() {
     if (!formEl) return
     formEl.resetFields()
 }
-function changeTransferTargetMethod(changeStaus: boolean) {
-    if (changeStaus) {
-        inputForm.value.transferTargetChildIdList = []
-    }
-    let filterList = transferTargetList.value.filter(x => inputForm.value.transferTargetIdList.includes(x.id));
-    transferTargetChiList.value = filterList.map(x => x.transferTargetChildList).flat();
+function changeTransferTargetMethod() {
+    inputForm.value.transferTargetChildIdList = []
+    calculationData()
 }
 function submitForm() {
     let formEl = formRef.value;
@@ -166,11 +169,15 @@ async function getTransferLimitById(id: string) {
         );
     })
 }
+function calculationData() {
+    let filterList = transferTargetList.value.filter(x => inputForm.value.transferTargetIdList.includes(x.id));
+    transferTargetChiList.value = filterList.map(x => x.transferTargetChildList).flat();
+}
 async function fetchData(id: string) {
     await Promise.all([
         getTransferTargetAddList(), getTransferLimitById(id),
     ])
-    changeTransferTargetMethod(false)
+    calculationData()
 }
 
 defineExpose({

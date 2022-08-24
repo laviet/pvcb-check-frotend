@@ -1,51 +1,46 @@
 <template>
-    <el-dialog v-model="dialogVisible" title="Sửa loại tiền" width="700px" :before-close="closeMethod"
-        :close-on-click-modal="false">
-        <el-form ref="formRef" :model="inputForm" :rules="rulesData" label-width="140px" class="demo-ruleForm"
-            label-position="left">
-            <el-form-item label="Loại tiền" prop="name">
-                <el-input v-model="inputForm.name"></el-input>
-            </el-form-item>
-            <el-form-item label="Đối tượng áp dụng" prop="objectApply">
-                <el-radio-group v-model="inputForm.objectApply">
-                    <el-radio label="all">Tất cả</el-radio>
-                    <el-radio label="customer">Khách hàng</el-radio>
-                    <el-radio label="customerGroup">Nhóm khách hàng</el-radio>
-                </el-radio-group>
-            </el-form-item>
-            <el-form-item label="Trạng thái" prop="status">
-                <el-radio-group v-model="inputForm.status">
-                    <el-radio label="ACTIVE">Kích hoạt</el-radio>
-                    <el-radio label="INACTIVE">Bỏ kích hoạt</el-radio>
-                </el-radio-group>
-            </el-form-item>
-            <el-form-item label="Mô tả" prop="note">
-                <el-input type="textarea" rows="5" v-model="inputForm.note"></el-input>
-            </el-form-item>
-        </el-form>
+    <el-dialog v-model="dialogVisible" title="Danh sách đối tác" width="700px" :before-close="closeMethod"
+        :close-on-click-modal="false" top="10vh">
+        <el-table :data="tableData" :header-cell-style="tableHeaderColor" border>
+            <el-table-column prop="name" label="Tên đối tác" />
+            <el-table-column label="Thao tác" fixed="right" width="140" align="center">
+                <template #default="scope">
+                    <el-button link type="primary" size="small" @click="editClick(scope.row.id)">Cấu hình
+                    </el-button>
+                </template>
+            </el-table-column>
+        </el-table>
         <template #footer>
             <span class="dialog-footer">
-                <el-button type="danger" @click="closeMethod()">Hủy</el-button>
-                <el-button type="primary" :loading="loaddingButton" @click="submitForm()">Lưu</el-button>
+                <el-button type="danger" @click="closeMethod()">Đóng</el-button>
             </span>
         </template>
     </el-dialog>
+    <PartnerConfigUpdate ref="childUpdateRef" />
 </template>
 
 <script lang="ts" setup>
 import { reactive, ref, onMounted, watch, toRefs, defineExpose, defineEmits } from "vue";
 import type { FormInstance, FormRules } from "element-plus";
 import { ElMessage } from "element-plus";
+import { tableHeaderColor } from "@/functionCommon/CommonFun"
 import httpbe from "@/http-fees";
+import PartnerConfigUpdate from './PartnerConfigUpdate.vue'
+
 const formRef = ref<FormInstance>();
 const emit = defineEmits(['closeDialog'])
+const childUpdateRef = ref()
 const dialogVisible = ref(false);
 const loaddingButton = ref(false);
+interface DataRes {
+    id: string,
+    name: string
+}
+const tableData = ref<Array<DataRes>>([])
 
 const inputForm = ref({
     id: "",
     name: "",
-    objectApply: "",
     note: "",
     status: "",
 })
@@ -65,13 +60,16 @@ function resetForm() {
     if (!formEl) return
     formEl.resetFields()
 }
+function editClick(id: string) {
+    childUpdateRef.value.initialMethod(id)
+}
 function submitForm() {
     let formEl = formRef.value;
     if (!formEl) return;
     formEl.validate((valid) => {
         if (valid) {
             loaddingButton.value = true;
-            httpbe.put(`/currency-type`, inputForm.value).then((resp) => {
+            httpbe.put(`/partner`, inputForm.value).then((resp) => {
                 ElMessage.success(
                     resp.data.message,
                 );
@@ -91,9 +89,17 @@ function submitForm() {
     });
 
 }
-function initialMethod(row: any) {
+function getAllData() {
+    httpbe.get(`/partner/brief`).then((resp) => {
+        ElMessage.success(
+            tableData.value = resp.data.payload,
+        );
+    })
+}
+function initialMethod() {
     dialogVisible.value = true;
-    inputForm.value = row;
+    getAllData()
+    // inputForm.value = row;
 }
 
 defineExpose({
