@@ -1,6 +1,6 @@
 <template>
     <el-dialog v-model="dialogVisible" title="Sửa mục đích chuyển tiền" width="700px" :before-close="closeMethod"
-        :close-on-click-modal="false" top="4vh"> 
+        :close-on-click-modal="false" top="4vh">
         <el-form ref="formRef" :model="inputForm" :rules="rulesData" label-width="160px" class="demo-ruleForm"
             label-position="left" style="margin-bottom: -30px;">
             <el-form-item label="Tên mục đích" prop="name">
@@ -54,7 +54,7 @@ const inputForm = ref({
     noteNoMe: "",
 })
 const rulesData = reactive<FormRules>({
-   name: [{ required: true, message: "Thông tin không được để trống", trigger: 'change' }],
+    name: [{ required: true, message: "Thông tin không được để trống", trigger: 'change' }],
     status: [{ required: true, message: "Thông tin không được để trống", trigger: 'change' }],
     objectApply: [{ required: true, message: "Thông tin không được để trống", trigger: 'change' }],
 })

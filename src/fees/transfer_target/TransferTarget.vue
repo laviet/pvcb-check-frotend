@@ -19,14 +19,14 @@
                 <span v-else-if="scope.row.status == 'INACTIVE'">Bỏ kích hoạt</span>
             </template>
         </el-table-column>
-        <el-table-column label="Thao tác" fixed="right" width="160" align="center">
+        <el-table-column label="Thao tác" fixed="right" width="140" align="center">
             <template #default="scope">
                 <el-button link type="danger" size="small" @click="deleteClick(scope.row.id)">Xóa
                 </el-button>
-                <el-button link type="primary" size="small" @click="editClick(scope.row)">Sửa
+                <el-button link type="primary" size="small" @click="editClick(scope.row.id)">Sửa
                 </el-button>
-                <el-button link type="success" size="small" @click="detailClick(scope.row.id)">Chi tiết
-                </el-button>
+                <!-- <el-button link type="success" size="small" @click="detailClick(scope.row.id)">Chi tiết
+                </el-button> -->
             </template>
         </el-table-column>
     </el-table>
@@ -59,8 +59,8 @@ function createTranferTargetMethod() {
 function dialogCloseCreateMethod() {
     getDataInitial()
 }
-function editClick(row: DataRes) {
-    childUpdateRef.value.initialMethod(row)
+function editClick(id: string) {
+    childUpdateRef.value.initialMethod(id)
 }
 function detailClick(id: string) {
     router.push({
