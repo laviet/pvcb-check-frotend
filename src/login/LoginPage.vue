@@ -16,7 +16,8 @@ function fetchData() {
     const loggedIn = localStorage.getItem('userInfo');
     if (loggedIn) {
         router.push({
-            name: "listCheckName"
+            // name: "listCheckName"
+            name: "transferTargetName"
         });
     }
 }

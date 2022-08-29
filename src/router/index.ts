@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import LayoutEway from '@/layout/IndexEway.vue'
+import LayoutFees from '@/layout/IndexFees.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -70,6 +71,47 @@ const routes: Array<RouteRecordRaw> = [
         name: "detailCheckName",
         component: () => import('@/check/DataDetail.vue')
       }
+    ],
+  },
+  {
+    path: "/fees",
+    component: LayoutFees,
+    children: [
+      {
+        path: 'transfer-target',
+        name: "transferTargetName",
+        component: () => import('@/fees/transfer_target/TransferTarget.vue')
+      },
+      {
+        path: 'transfer-target/:id',
+        name: "transferTargetDetailName",
+        component: () => import('@/fees/transfer_target/TransferTargetChild.vue')
+      },
+      {
+        path: 'transfer-limit',
+        name: "transferLimitNam",
+        component: () => import('@/fees/transfer_limit/TransferLimit.vue')
+      },
+      {
+        path: 'currency-type',
+        name: "currencyTypeName",
+        component: () => import('@/fees/currency_type/CurrencyType.vue')
+      },
+      {
+        path: 'exchange-rate',
+        name: "exchangeRateName",
+        component: () => import('@/fees/exchange_rate/ExchangeRate.vue')
+      },
+      {
+        path: 'partner',
+        name: "partnerName",
+        component: () => import('@/fees/partner/PartnerData.vue')
+      },
+      {
+        path: 'partner-config',
+        name: "partnerConfigName",
+        component: () => import('@/fees/partner/PartnerConfig.vue')
+      },
     ],
   },
 ]

@@ -1,0 +1,10 @@
+.el-form{
+    margin-bottom: -20px;
+    margin-top: -10px;
+}
+.el-form-item__label {
+    word-break: break-word;
+}
+.el-checkbox__inner {
+    border: 1px solid #606266;
+}

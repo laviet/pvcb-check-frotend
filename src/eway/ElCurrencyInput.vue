@@ -13,7 +13,9 @@ export default {
   },
   setup(props) {
     const { inputRef, formattedValue } = useCurrencyInput(props.options);
-
+    if (formattedValue == 0) {
+      return ""
+    }
     return { inputRef, formattedValue };
   },
 };
