@@ -190,7 +190,7 @@ import httpbe from "@/http-be";
 // import pdf from 'vue-pdf';
 import VuePdfEmbed from 'vue-pdf-embed'
 const route = useRoute();
-const  source2= 'data:application/pdf;base64,SlZCRVJpMHhMalVOQ2lXMXRiVzFEUW94SURBZ2IySnFEUW84UEM5VWVYQmxMME5oZEdGc2IyY3ZVR0ZuWlhNZ01pQXdJRkl2VEdGdVp5aGxiaTFWVXlrZ0wxTjBjblZqZEZSeVpXVlNiMjkwSURFd0lEQW'
+const source2 = 'data:application/pdf;base64,SlZCRVJpMHhMalVOQ2lXMXRiVzFEUW94SURBZ2IySnFEUW84UEM5VWVYQmxMME5oZEdGc2IyY3ZVR0ZuWlhNZ01pQXdJRkl2VEdGdVp5aGxiaTFWVXlrZ0wxTjBjblZqZEZSeVpXVlNiMjkwSURFd0lEQW'
 // const  source2= '@/assets/file/abc.pdf'
 const id = route.params.id;
 const radioModel = ref('a')
@@ -293,10 +293,6 @@ function approvedProfileMethod() {
         .then(() => {
             approvedMethod('APPROVED')
             unlockAmountMethod()
-            ElMessage({
-                type: 'success',
-                message: "Duyệt hồ sơ thành công",
-            })
         }).finally(() => {
             setTimeout(() => {
                 loaddingApprovedButton.value = false
@@ -329,9 +325,17 @@ function rejectProfileMethod() {
 function approvedMethod(status: string) {
     let id = inputForm.value.id;
     httpbe.put(`/check/approved/${id}?status=${status}`).then((resp) => {
-        console.log(resp.data.payload)
+        ElMessage({
+            type: 'success',
+            message: "Duyệt hồ sơ thành công",
+        })
         getDataInitial()
-    });
+    }).catch(err => {
+        ElMessage({
+            type: 'error',
+            message: "Lỗi duyệt hồ sơ",
+        }) 
+    })
 }
 function unlockAmountMethod() {
     let id = inputForm.value.idLockAmount;
