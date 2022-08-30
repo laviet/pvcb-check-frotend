@@ -98,7 +98,7 @@
                                             <el-button type="text" @click="expandDialogVisible = true"><u>Phóng to</u></el-button>
                                             <el-button type="text">
                                                 <u>
-                                                    <a :href="source2" download class="el-collapse-text-button">>Tải</a>
+                                                    <a :href="source2" download class="el-collapse-text-button">Tải</a>
                                                 </u>
                                             </el-button>
                                         </div>
