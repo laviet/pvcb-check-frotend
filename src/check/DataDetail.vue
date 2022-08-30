@@ -30,6 +30,110 @@
                         </el-icon>
                     </el-upload>
                 </div> -->
+                <div>
+                    <div class="demo-collapse">
+                        <el-collapse>
+                            <el-collapse-item title="HS chứng minh học phí" name="1">
+                                <div :style="{display: 'flex', justifyContent: 'center'}">
+                                    <div>
+                                        <div :style="{background: 'white', border: '1px solid #999999'}">
+                                            <vue-pdf-embed :source="source2" :page="1" :disableAnnotationLayer="true" :disableTextLayer="true" :height="300" />
+                                        <!-- replace vue-pdf-embed to img if source is not pdf -->
+                                        </div>
+                                        <div :style="{marginTop: '4px', display: 'flex', justifyContent: 'center', gap: '12px'}">
+                                            <el-button type="text" @click="expandDialogVisible = true"><u>Phóng to</u></el-button>
+                                            <el-button type="text">
+                                                <u>
+                                                    <a :href="source2" download :style="{color: 'var(--el-color-primary)'}">Tải</a>
+                                                </u>
+                                            </el-button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </el-collapse-item>
+                            <el-collapse-item title="HS chứng minh sinh hoạt phí" name="2">
+                                <div :style="{display: 'flex', justifyContent: 'center'}">
+                                    <div>
+                                        <div :style="{background: 'white', border: '1px solid #999999'}">
+                                            <vue-pdf-embed :source="source2" :page="1" :disableAnnotationLayer="true" :disableTextLayer="true" :height="300" />
+                                        <!-- replace vue-pdf-embed to img if source is not pdf -->
+                                        </div>
+                                        <div :style="{marginTop: '4px', display: 'flex', justifyContent: 'center', gap: '12px'}">
+                                            <el-button type="text" @click="expandDialogVisible = true"><u>Phóng to</u></el-button>
+                                            <el-button type="text">
+                                                <u>
+                                                    <a :href="source2" download :style="{color: 'var(--el-color-primary)'}">Tải</a>
+                                                </u>
+                                            </el-button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </el-collapse-item>
+                            <el-collapse-item title="Hộ chiếu (Passport)" name="3">
+                                <div :style="{display: 'flex', justifyContent: 'center'}">
+                                    <div>
+                                        <div :style="{background: 'white', border: '1px solid #999999'}">
+                                            <vue-pdf-embed :source="source2" :page="1" :disableAnnotationLayer="true" :disableTextLayer="true" :height="300" />
+                                        <!-- replace vue-pdf-embed to img if source is not pdf -->
+                                        </div>
+                                        <div :style="{marginTop: '4px', display: 'flex', justifyContent: 'center', gap: '12px'}">
+                                            <el-button type="text" @click="expandDialogVisible = true"><u>Phóng to</u></el-button>
+                                            <el-button type="text">
+                                                <u>
+                                                    <a :href="source2" download :style="{color: 'var(--el-color-primary)'}">Tải</a>
+                                                </u>
+                                            </el-button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </el-collapse-item>
+                            <el-collapse-item title="Thị thực (Visa)" name="4">
+                                <div :style="{display: 'flex', justifyContent: 'center'}">
+                                    <div>
+                                        <div :style="{background: 'white', border: '1px solid #999999'}">
+                                            <vue-pdf-embed :source="source2" :page="1" :disableAnnotationLayer="true" :disableTextLayer="true" :height="300" />
+                                        <!-- replace vue-pdf-embed to img if source is not pdf -->
+                                        </div>
+                                        <div :style="{marginTop: '4px', display: 'flex', justifyContent: 'center', gap: '12px'}">
+                                            <el-button type="text" @click="expandDialogVisible = true"><u>Phóng to</u></el-button>
+                                            <el-button type="text">
+                                                <u>
+                                                    <a :href="source2" download :style="{color: 'var(--el-color-primary)'}">Tải</a>
+                                                </u>
+                                            </el-button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </el-collapse-item>
+                            <el-collapse-item title="Chứng minh nhân thân" name="5">
+                                <div :style="{display: 'flex', justifyContent: 'center'}">
+                                    <div>
+                                        <div :style="{background: 'white', border: '1px solid #999999'}">
+                                            <vue-pdf-embed :source="source2" :page="1" :disableAnnotationLayer="true" :disableTextLayer="true" :height="300" />
+                                        <!-- replace vue-pdf-embed to img if source is not pdf -->
+                                        </div>
+                                        <div :style="{marginTop: '4px', display: 'flex', justifyContent: 'center', gap: '12px'}">
+                                            <el-button type="text" @click="expandDialogVisible = true"><u>Phóng to</u></el-button>
+                                            <el-button type="text">
+                                                <u>
+                                                    <a :href="source2" download :style="{color: 'var(--el-color-primary)'}">Tải</a>
+                                                </u>
+                                            </el-button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </el-collapse-item> 
+                        </el-collapse>
+                    </div>
+                    <el-dialog
+                        v-model="expandDialogVisible"
+                        title="Phóng to"
+                        width="50%"
+                    >
+                        <vue-pdf-embed :source="source2" />
+                        <!-- replace vue-pdf-embed to img if source is not pdf -->
+                    </el-dialog>
+                </div>
                 <br />
                 <h4>Thông tin chi tiết</h4>
                 <el-form ref="formRef" :model="inputForm" :rules="rulesData" label-width="140px" class="demo-ruleForm"
@@ -190,8 +294,8 @@ import httpbe from "@/http-be";
 // import pdf from 'vue-pdf';
 import VuePdfEmbed from 'vue-pdf-embed'
 const route = useRoute();
-const source2 = 'data:application/pdf;base64,SlZCRVJpMHhMalVOQ2lXMXRiVzFEUW94SURBZ2IySnFEUW84UEM5VWVYQmxMME5oZEdGc2IyY3ZVR0ZuWlhNZ01pQXdJRkl2VEdGdVp5aGxiaTFWVXlrZ0wxTjBjblZqZEZSeVpXVlNiMjkwSURFd0lEQW'
-// const  source2= '@/assets/file/abc.pdf'
+// const source2 = 'data:application/pdf;base64,SlZCRVJpMHhMalVOQ2lXMXRiVzFEUW94SURBZ2IySnFEUW84UEM5VWVYQmxMME5oZEdGc2IyY3ZVR0ZuWlhNZ01pQXdJRkl2VEdGdVp5aGxiaTFWVXlrZ0wxTjBjblZqZEZSeVpXVlNiMjkwSURFd0lEQW'
+const source2 = 'https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf'
 const id = route.params.id;
 const radioModel = ref('a')
 const loaddingApprovedButton = ref(false)
@@ -254,6 +358,7 @@ const inputForm1 = reactive({
 })
 const dialogImageUrl = ref('')
 const dialogVisible = ref(false)
+const expandDialogVisible = ref(false)
 
 const handleRemove: UploadProps['onRemove'] = (uploadFile, uploadFiles) => {
     console.log(uploadFile, uploadFiles)
