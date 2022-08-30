@@ -44,7 +44,7 @@
                                             <el-button type="text" @click="expandDialogVisible = true"><u>Phóng to</u></el-button>
                                             <el-button type="text">
                                                 <u>
-                                                    <a :href="source2" download :style="{color: 'var(--el-color-primary)'}">Tải</a>
+                                                    <a :href="source2" download class="el-collapse-text-button">>Tải</a>
                                                 </u>
                                             </el-button>
                                         </div>
@@ -62,7 +62,7 @@
                                             <el-button type="text" @click="expandDialogVisible = true"><u>Phóng to</u></el-button>
                                             <el-button type="text">
                                                 <u>
-                                                    <a :href="source2" download :style="{color: 'var(--el-color-primary)'}">Tải</a>
+                                                    <a :href="source2" download class="el-collapse-text-button">>Tải</a>
                                                 </u>
                                             </el-button>
                                         </div>
@@ -80,7 +80,7 @@
                                             <el-button type="text" @click="expandDialogVisible = true"><u>Phóng to</u></el-button>
                                             <el-button type="text">
                                                 <u>
-                                                    <a :href="source2" download :style="{color: 'var(--el-color-primary)'}">Tải</a>
+                                                    <a :href="source2" download class="el-collapse-text-button">>Tải</a>
                                                 </u>
                                             </el-button>
                                         </div>
@@ -98,7 +98,7 @@
                                             <el-button type="text" @click="expandDialogVisible = true"><u>Phóng to</u></el-button>
                                             <el-button type="text">
                                                 <u>
-                                                    <a :href="source2" download :style="{color: 'var(--el-color-primary)'}">Tải</a>
+                                                    <a :href="source2" download class="el-collapse-text-button">>Tải</a>
                                                 </u>
                                             </el-button>
                                         </div>
@@ -116,7 +116,7 @@
                                             <el-button type="text" @click="expandDialogVisible = true"><u>Phóng to</u></el-button>
                                             <el-button type="text">
                                                 <u>
-                                                    <a :href="source2" download :style="{color: 'var(--el-color-primary)'}">Tải</a>
+                                                    <a :href="source2" download class="el-collapse-text-button">Tải</a>
                                                 </u>
                                             </el-button>
                                         </div>
@@ -468,5 +468,11 @@ onMounted(() => {
 <style lang="scss" scoped>
 :deep(.el-radio-button__inner) {
     padding: 10px 150px;
+}
+.el-collapse-text-button {
+    color: var(--el-color-primary);
+    :hover {
+        color: var(--el-color-primary-light-3);
+    }
 }
 </style>
