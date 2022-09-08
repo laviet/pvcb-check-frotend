@@ -1,10 +1,10 @@
 <template>
-    <el-dialog v-model="dialogVisible" title="Sửa loại tiền" width="700px" :before-close="closeMethod"
+    <el-dialog v-model="dialogVisible" title="Sửa biểu phí" width="700px" :before-close="closeMethod"
         :close-on-click-modal="false" top="5vh">
         <el-form ref="formRef" :model="inputForm" :rules="rulesData" label-width="140px" class="demo-ruleForm"
             label-position="left">
             <el-form-item label="Loại tiền tệ" prop="currencyId">
-                <el-select v-model="inputForm.currencyId" placeholder="Chọn loại tiền tệ" style="width: 100%">
+                <el-select v-model="inputForm.currencyId" @change="changeCurrencyMethod()" placeholder="Chọn loại tiền tệ" style="width: 100%">
                     <el-option v-for="item in currencyTypeBriefList" :key="item.id" :value="item.id" :label="item.name">
                     </el-option>
                 </el-select>
@@ -12,6 +12,28 @@
             <el-form-item label="Tên biểu phí" prop="name">
                 <el-input v-model="inputForm.name"></el-input>
             </el-form-item>
+            <el-form-item label="Trạng thái" prop="status">
+                <el-radio-group v-model="inputForm.status">
+                    <el-radio label="ACTIVE">Kích hoạt</el-radio>
+                    <el-radio label="INACTIVE">Bỏ kích hoạt</el-radio>
+                </el-radio-group>
+            </el-form-item>
+            <span v-if="currencySelect == 'JPY'">
+                <el-form-item label="Đến tài khoản" prop="mizuhoBank">
+                    <el-radio-group v-model="inputForm.mizuhoBank">
+                        <el-radio label="IN_MIZUHO">Mở tại Mizuho</el-radio>
+                        <el-radio label="OUT_MIZUHO">Không mở tại Mizuho</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+            </span>
+            <span v-if="currencySelect == 'SGD'">
+                <el-form-item label="Đến ngân hàng" prop="singaporeBank">
+                    <el-radio-group v-model="inputForm.singaporeBank">
+                        <el-radio label="IN_SINGAPORE">Ở Singapore</el-radio>
+                        <el-radio label="OUT_SINGAPORE">Không ở Singapore</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+            </span>
             <div style="font-weight: bold">1. Phí PVcomBank (USD)</div>
             <br />
             <el-row :gutter="20">
@@ -113,6 +135,7 @@ const emit = defineEmits(['closeDialog'])
 const dialogVisible = ref(false);
 const loaddingButton = ref(false);
 const currencyTypeBriefList = ref<NameObject[]>([])
+const currencySelect = ref()
 interface NameObject {
     id: "",
     name: "",
@@ -122,6 +145,8 @@ const inputForm = ref({
     id: String(),
     currencyId: String(),
     name: String(),
+    status: String(),
+
     pvComNumber: "",
     pvComPercent: "",
     pvComMin: "",
@@ -136,9 +161,16 @@ const inputForm = ref({
     electricPercent: "",
     electricMin: "",
     electricMax: "",
+
+    mizuhoBank: "",
+    singaporeBank: "",
 })
 const rulesData = reactive<FormRules>({
-    name: [{ required: true, message: "Thông tin không được để trống", trigger: 'change' }]
+    name: [{ required: true, message: "Thông tin không được để trống", trigger: 'change' }],
+    status: [{ required: true, message: "Thông tin không được để trống", trigger: 'change' }],
+    currencyId: [{ required: true, message: "Thông tin không được để trống", trigger: 'change' }],
+    mizuhoBank: [{ required: true, message: "Thông tin không được để trống", trigger: 'change' }],
+    singaporeBank: [{ required: true, message: "Thông tin không được để trống", trigger: 'change' }],
 })
 function closeMethod() {
     dialogVisible.value = false;
@@ -152,6 +184,9 @@ function resetForm() {
     let formEl = formRef.value;
     if (!formEl) return
     formEl.resetFields()
+}
+function changeCurrencyMethod() {
+    currencySelect.value = currencyTypeBriefList.value.filter(a => a.id == inputForm.value.currencyId)[0].name
 }
 function submitForm() {
     let formEl = formRef.value;
@@ -182,6 +217,7 @@ function submitForm() {
 function getCurrencyTypeBriefList() {
     httpbe.get(`/currency-type/other`).then((resp) => {
         currencyTypeBriefList.value = resp.data.payload;
+        changeCurrencyMethod()
     })
 }
 function initialMethod(row: any) {

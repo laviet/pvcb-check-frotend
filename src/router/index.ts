@@ -117,6 +117,11 @@ const routes: Array<RouteRecordRaw> = [
         name: "FeeScheduleName",
         component: () => import('@/fees/fee_schedule/FeeSchedule.vue')
       },
+      {
+        path: 'fee-config',
+        name: "FeeConfigName",
+        component: () => import('@/fees/fee_config/FeeConfig.vue')
+      },
     ],
   },
 ]

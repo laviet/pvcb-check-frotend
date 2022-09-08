@@ -30,6 +30,9 @@
             <router-link to="/fees/fee-schedule" class="router-link-class">
                 <el-menu-item index="1-4-5">Cấu hình biểu phí</el-menu-item>
             </router-link>
+            <router-link to="/fees/fee-config" class="router-link-class">
+                <el-menu-item index="1-4-6">Cấu hình phí</el-menu-item>
+            </router-link>
         </el-sub-menu>
         <el-sub-menu index="2">
             <template #title>

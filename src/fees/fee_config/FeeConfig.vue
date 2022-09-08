@@ -5,9 +5,9 @@
         </span>
     </div>
     <el-table :data="tableData" :header-cell-style="tableHeaderColor" border>
-        <el-table-column prop="code" label="Mã biểu phí" />
-        <el-table-column prop="name" label="Tên biểu phí" />
-        <el-table-column prop="currencyType.name" align="center" label="Loại tiền" />
+        <el-table-column prop="code" label="Mã phí" />
+        <el-table-column prop="name" label="Tên phí" />
+        <!-- <el-table-column prop="currencyType.name" align="center" label="Loại tiền" /> -->
         <el-table-column label="Trạng thái" align="center" width="140px">
             <template #default="scope">
                 <span v-if="scope.row.status == 'ACTIVE'">Kích hoạt</span>
@@ -23,8 +23,8 @@
             </template>
         </el-table-column>
     </el-table>
-    <FeeScheduleCreate ref="childCreateRef" @closeDialog="dialogCloseCreateMethod" />
-    <FeeScheduleUpdate ref="childUpdateRef" @closeDialog="dialogCloseCreateMethod" />
+    <FeeConfigCreate ref="childCreateRef" @closeDialog="dialogCloseCreateMethod" />
+    <FeeConfigUpdate ref="childUpdateRef" @closeDialog="dialogCloseCreateMethod" />
 </template>
 
 <script lang="ts" setup>
@@ -32,8 +32,8 @@ import httpbe from "@/http-fees";
 import { reactive, ref, onMounted, watch, toRefs, vModelRadio, provide } from "vue";
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { tableHeaderColor } from "@/functionCommon/CommonFun"
-import FeeScheduleCreate from './FeeScheduleCreate.vue'
-import FeeScheduleUpdate from './FeeScheduleUpdate.vue'
+import FeeConfigCreate from './FeeConfigCreate.vue'
+import FeeConfigUpdate from './FeeConfigUpdate.vue'
 const childCreateRef = ref()
 const childUpdateRef = ref()
 interface DataRes {
@@ -61,7 +61,7 @@ function deleteClick(id: string) {
             cancelButtonText: 'Hủy',
             type: 'warning',
         }).then(() => {
-            httpbe.delete(`/fee-schedule/${id}`).then((resp) => {
+            httpbe.delete(`/fee-config/${id}`).then((resp) => {
                 getDataInitial()
                 ElMessage.success({
                     message: resp.data.message,
@@ -75,7 +75,7 @@ function deleteClick(id: string) {
 
 }
 function getDataInitial() {
-    httpbe.get("/fee-schedule").then((resp) => {
+    httpbe.get("/fee-config").then((resp) => {
         tableData.value = resp.data.payload;
     }).catch(err => {
         console.log(err.data.message)
