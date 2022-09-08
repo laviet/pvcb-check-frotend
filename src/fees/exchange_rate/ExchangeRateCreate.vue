@@ -43,8 +43,8 @@ const createOther = ref(false);
 
 const inputForm = reactive({
     name: String(),
-    spotRate: Number,
-    internalRate: Number,
+    spotRate: "",
+    internalRate: "",
     status: "ACTIVE"
 })
 const rulesData = reactive<FormRules>({ 

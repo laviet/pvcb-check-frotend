@@ -100,9 +100,9 @@ const inputForm = reactive({
     type: "",
     typeDetail: "",
     moneyType: "",
-    money: Number,
-    moneyMin: Number,
-    moneyMax: Number,
+    money: "",
+    moneyMin: "",
+    moneyMax: "",
     transferTargetIdList: [] as any,
     transferTargetChildIdList: [],
 

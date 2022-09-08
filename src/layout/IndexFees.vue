@@ -27,6 +27,9 @@
             <router-link to="/fees/exchange-rate" class="router-link-class">
                 <el-menu-item index="1-4-4">Tỷ giá</el-menu-item>
             </router-link>
+            <router-link to="/fees/fee-schedule" class="router-link-class">
+                <el-menu-item index="1-4-5">Cấu hình biểu phí</el-menu-item>
+            </router-link>
         </el-sub-menu>
         <el-sub-menu index="2">
             <template #title>

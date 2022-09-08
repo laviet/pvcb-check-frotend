@@ -41,8 +41,8 @@ const loaddingButton = ref(false);
 const inputForm = ref({
     id: String(),
     name: String(),
-    spotRate: Number,
-    internalRate: Number,
+    spotRate: "",
+    internalRate: "",
     status: String()
 })
 const rulesData = reactive<FormRules>({
