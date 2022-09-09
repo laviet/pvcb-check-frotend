@@ -15,15 +15,23 @@
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="Loại tiền tệ"  prop="currencyTypeIdList">
-                <el-select v-model="inputForm.currencyTypeIdList" multiple placeholder="Chọn loại tiền tệ">
+            <el-form-item label="Tỷ giá">
+                <el-select v-model="inputForm.exchangeRateId" placeholder="Chọn tỷ giá" :clearable="true">
+                    <el-option v-for="item in exchangeRateBriefList" :key="item.id" :value="item.id" :label="item.name">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="Loại tiền tệ" prop="currencyTypeIdList">
+                <el-select v-model="inputForm.currencyTypeIdList" multiple @change="getFeeScheduleCurrency(true)"
+                    placeholder="Chọn loại tiền tệ">
                     <el-option v-for="item in currencyTypeBriefList" :key="item.id" :value="item.id" :label="item.name">
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="Tỷ giá">
-                <el-select v-model="inputForm.exchangeRateId" placeholder="Chọn tỷ giá" :clearable="true">
-                    <el-option v-for="item in exchangeRateBriefList" :key="item.id" :value="item.id" :label="item.name">
+            <el-form-item label="Chọn phí" prop="feeConfigIdList">
+                <el-select v-model="inputForm.feeConfigIdList" multiple placeholder="Chọn phí">
+                    <el-option v-for="item in feeConfigBriefList" :key="item.id" :value="item.id"
+                        :label="item.code+' - '+item.name+' - '+item.currencyName">
                     </el-option>
                 </el-select>
             </el-form-item>
@@ -50,6 +58,7 @@ const transferTargetList = ref<TransferObject[]>([])
 const transferTargetChiList = ref<NameDataObject[]>([])
 const exchangeRateBriefList = ref<NameObject[]>([])
 const currencyTypeBriefList = ref<NameObject[]>([])
+const feeConfigBriefList = ref<FeeConfigObject[]>([])
 
 interface TransferObject {
     id: string,
@@ -66,12 +75,19 @@ interface NameObject {
     id: "",
     name: "",
 }
+interface FeeConfigObject {
+    id: "",
+    name: "",
+    code: "",
+    currencyName: "",
+}
 const inputForm = ref({
     id: "",
     exchangeRateId: "",
     transferTargetIdList: [] as any,
     transferTargetChildIdList: [],
     currencyTypeIdList: [],
+    feeConfigIdList: [],
 })
 const rulesData = reactive<FormRules>({
     name: [{ required: true, message: "Thông tin không được để trống", trigger: 'change' }]
@@ -130,18 +146,30 @@ async function getExchangeRateBriefList() {
 async function getCurrencyTypeBriefList() {
     await httpbe.get(`/currency-type/other`).then((resp) => {
         currencyTypeBriefList.value = resp.data.payload;
+        getFeeScheduleCurrency(false)
     })
 }
 async function getPartnerConfigById(id: string) {
     await httpbe.get(`/partner/config/${id}`).then((resp) => {
+        // alert("1")
         inputForm.value = resp.data.payload;
+    })
+}
+function getFeeScheduleCurrency(reset: boolean) {
+    if (reset) {
+        inputForm.value.feeConfigIdList = []
+    }
+    httpbe.get(`/fee-config/currency/?currencyIdList=${inputForm.value.currencyTypeIdList}`).then((resp) => {
+        feeConfigBriefList.value = resp.data.payload;
+        // alert("2")
     })
 }
 async function initialMethod(id: string) {
     dialogVisible.value = true;
+    await getPartnerConfigById(id)
     await Promise.all([
         getTransferTargetAddList(), getExchangeRateBriefList(),
-         getPartnerConfigById(id), getCurrencyTypeBriefList(),
+        getCurrencyTypeBriefList(), 
     ])
     calculationData()
 }

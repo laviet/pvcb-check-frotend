@@ -7,7 +7,8 @@
     <el-table :data="tableData" :header-cell-style="tableHeaderColor" border>
         <el-table-column prop="code" label="Mã phí" />
         <el-table-column prop="name" label="Tên phí" />
-        <!-- <el-table-column prop="currencyType.name" align="center" label="Loại tiền" /> -->
+        <el-table-column prop="currencyType.name" align="center" label="Loại tiền" />
+        <el-table-column prop="feeSchedule.name" align="center" label="Biểu phí" />
         <el-table-column label="Trạng thái" align="center" width="140px">
             <template #default="scope">
                 <span v-if="scope.row.status == 'ACTIVE'">Kích hoạt</span>

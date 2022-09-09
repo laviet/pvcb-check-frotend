@@ -5,6 +5,7 @@
         </span>
     </div>
     <el-table :data="tableData" :header-cell-style="tableHeaderColor" border>
+        <el-table-column prop="code" label="Mã đối tác" width="100" align="center" />
         <el-table-column prop="name" label="Tên đối tác" />
         <el-table-column label="Trạng thái" align="center" width="140px">
             <template #default="scope">
@@ -20,13 +21,24 @@
                 </span>
             </template>
         </el-table-column>
-        <el-table-column label="Loại tiền tệ">
+        <el-table-column label="Loại tiền tệ - Phí">
             <template #default="scope">
-                <span v-for="(item, index) in scope.row.currencyTypeSet" :key="item.id">
-                    {{ index + 1 }}. {{ item.name }}<br />
+                <span v-for="(item, index) in scope.row.currencyTypeData" :key="item.id">
+                    {{ index + 1 }}. {{ item.name }} -
+                    <span v-for="(item1, index1) in item.feeConfigData" :key="item1.id">
+                        {{index+1}}.{{index1+1}} {{ item1.name }}<br />
+                    </span>
+                    <br/>
                 </span>
             </template>
         </el-table-column>
+        <!-- <el-table-column label="Phí">
+            <template #default="scope">
+                <span v-for="(item, index) in scope.row.feeConfigSet" :key="item.id">
+                    {{ index + 1 }}. {{ item.code +' - '+item.name }}<br />
+                </span>
+            </template>
+        </el-table-column> -->
         <el-table-column label="Thao tác" fixed="right" width="140" align="center">
             <template #default="scope">
                 <el-button link type="primary" size="small" @click="editClick(scope.row.id)">Cấu hình
@@ -54,11 +66,16 @@ interface DataRes {
     status: string;
     exchangeRate: NameObject,
     transferTargetChildSet: Array<NameObject>,
-    currencyTypeSet: Array<NameObject>,
+    currencyTypeData: Array<NameListObject>,
 }
 interface NameObject {
     id: "",
     name: "",
+}
+interface NameListObject {
+    id: "",
+    name: "",
+    feeConfigData: Array<NameObject>
 }
 const tableData = ref<Array<DataRes>>([])
 function childCreateRefMethod() {

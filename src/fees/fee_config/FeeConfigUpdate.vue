@@ -1,7 +1,7 @@
 <template>
     <el-dialog v-model="dialogVisible" title="Sửa phí" width="700px" :before-close="closeMethod"
         :close-on-click-modal="false" top="5vh">
-        <el-form ref="formRef" :model="inputForm" :rules="rulesData" label-width="140px" class="demo-ruleForm"
+        <el-form ref="formRef" :model="inputForm" :rules="rulesData" label-width="160px" class="demo-ruleForm"
             label-position="left">
             <el-form-item label="Loại tiền tệ" prop="currencyId">
                 <el-select v-model="inputForm.currencyId" @change="changeCurrencyMethod(true)"
