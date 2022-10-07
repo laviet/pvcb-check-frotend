@@ -9,6 +9,6 @@
 .app-main {
   min-height: calc(100vh - 50px);
   overflow: hidden;
-  padding: 10px 15px;
+  padding: 10px 15px 30px 15px;
 }
 </style>

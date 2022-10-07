@@ -158,7 +158,6 @@ const handleSizeChange = (val: number) => {
     filterDataMethod(false)
 }
 const handleCurrentChange = (val: number) => {
-    // alert(`current page: ${val}`)
     filterDataMethod(false)
 }
 interface User {

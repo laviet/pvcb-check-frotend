@@ -5,6 +5,7 @@
         </span>
     </div>
     <el-table :data="tableData" :header-cell-style="tableHeaderColor" border>
+        <el-table-column type="index" label="STT" align="center" width="55" />
         <el-table-column prop="name" label="Tên nhóm mục đích" />
         <el-table-column label="Mục đích">
             <template #default="scope">

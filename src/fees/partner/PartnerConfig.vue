@@ -4,7 +4,8 @@
             <el-button type="success" @click="showData()">Cấu hình</el-button>
         </span>
     </div>
-    <el-table :data="tableData" :header-cell-style="tableHeaderColor" border>
+    <el-table :data="tableDataFilter" :header-cell-style="tableHeaderColor" border>
+        <el-table-column type="index" label="STT" align="center" width="55" />
         <el-table-column prop="code" label="Mã đối tác" width="100" align="center" />
         <el-table-column prop="name" width="120" label="Tên đối tác" />
         <el-table-column label="Trạng thái" align="center" width="110px">
@@ -28,7 +29,7 @@
                     <span v-for="(item1, index1) in item.feeConfigData" :key="item1.id">
                         {{index+1}}.{{index1+1}} {{ item1.name }}<br />
                     </span>
-                    <br/>
+                    <br />
                 </span>
             </template>
         </el-table-column>
@@ -41,11 +42,15 @@
         </el-table-column> -->
         <el-table-column label="Thao tác" fixed="right" width="100" align="center">
             <template #default="scope">
-                <el-button link type="primary" size="small" @click="editClick(scope.row.id)">Sửa<a href="http://" target="_blank" rel="noopener noreferrer"></a>
+                <el-button link type="primary" size="small" @click="editClick(scope.row.id)">Sửa<a href="http://"
+                        target="_blank" rel="noopener noreferrer"></a>
                 </el-button>
             </template>
         </el-table-column>
     </el-table>
+    <el-pagination style="float: right; margin-top: 15px" v-model:currentPage="currentPage" v-model:page-size="pageSize"
+        :page-sizes="pageSizeList" :small="false" :disabled="false" :background="true" layout="sizes, prev, pager, next"
+        :total="totalPage" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
     <PartnerConfigDialog ref="childDialogRef" @closeDialog="dialogCloseCreateMethod" />
     <PartnerConfigUpdate ref="childUpdateRef" @closeDialog="dialogCloseCreateMethod" />
 </template>
@@ -55,6 +60,7 @@ import httpbe from "@/http-fees";
 import { reactive, ref, onMounted, watch, toRefs, vModelRadio, provide } from "vue";
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { tableHeaderColor } from "@/functionCommon/CommonFun"
+import { pageSizeList } from "@/functionCommon/DataConstant"
 import PartnerConfigDialog from './PartnerConfigDialog.vue'
 import PartnerConfigUpdate from './PartnerConfigUpdate.vue'
 const childDialogRef = ref()
@@ -78,6 +84,21 @@ interface NameListObject {
     feeConfigData: Array<NameObject>
 }
 const tableData = ref<Array<DataRes>>([])
+const tableDataFilter = ref<Array<DataRes>>([])
+const currentPage = ref(1)
+const totalPage = ref(1)
+const pageSize = ref(10)
+const handleSizeChange = (val: number) => {
+    filterDataMethod()
+}
+const handleCurrentChange = (val: number) => {
+    filterDataMethod()
+}
+function filterDataMethod() {
+    let list = tableData.value;
+    totalPage.value = list.length;
+    tableDataFilter.value = list.slice(pageSize.value * (currentPage.value - 1), pageSize.value * currentPage.value);
+}
 function childCreateRefMethod() {
     childCreateRef.value.initialMethod()
 }
@@ -115,6 +136,7 @@ function deleteClick(id: string) {
 function getDataInitial() {
     httpbe.get("/partner/config").then((resp) => {
         tableData.value = resp.data.payload;
+        filterDataMethod()
     }).catch(err => {
         console.log(err.data.message)
     })

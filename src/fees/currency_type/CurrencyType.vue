@@ -5,6 +5,7 @@
         </span>
     </div>
     <el-table :data="tableData" :header-cell-style="tableHeaderColor" border>
+        <el-table-column type="index" label="STT" align="center" width="55" />
         <el-table-column prop="name" label="Loại tiền" />
         <el-table-column prop="note" label="Mô tả" />
 

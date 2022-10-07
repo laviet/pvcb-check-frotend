@@ -5,6 +5,7 @@
         </span>
     </div>
     <el-table :data="tableData" :header-cell-style="tableHeaderColor" border>
+        <el-table-column type="index" label="STT" align="center" width="55" />
         <el-table-column prop="name" label="Tên hạn mức" />
         <el-table-column label="Loại hạn mức" align="center" width="140px">
             <template #default="scope">
