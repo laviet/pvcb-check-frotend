@@ -1,10 +1,11 @@
 <template>
-    <el-dialog v-model="dialogVisible" title="Sửa biểu phí" width="700px" :before-close="closeMethod"
+    <el-dialog v-model="dialogVisible" title="Sửa biểu phí" width="800px" :before-close="closeMethod"
         :close-on-click-modal="false" top="5vh">
         <el-form ref="formRef" :model="inputForm" :rules="rulesData" label-width="140px" class="demo-ruleForm"
             label-position="left">
             <el-form-item label="Loại tiền tệ" prop="currencyId">
-                <el-select v-model="inputForm.currencyId" @change="changeCurrencyMethod()" placeholder="Chọn loại tiền tệ" style="width: 100%">
+                <el-select v-model="inputForm.currencyId" @change="changeCurrencyMethod(true)"
+                    placeholder="Chọn loại tiền tệ" style="width: 100%">
                     <el-option v-for="item in currencyTypeBriefList" :key="item.id" :value="item.id" :label="item.name">
                     </el-option>
                 </el-select>
@@ -34,76 +35,129 @@
                     </el-radio-group>
                 </el-form-item>
             </span>
-            <div style="font-weight: bold">1. Phí PVcomBank (USD)</div>
+            <div style="font-weight: bold">1. Phí PVcomBank</div>
             <br />
             <el-row :gutter="20">
                 <el-col :span="12">
                     <el-form-item label="Theo số tiền" prop="pvComNumber">
-                        <el-input type="number" v-model="inputForm.pvComNumber" />
+                        <el-input type="number" v-model="inputForm.pvComNumber">
+                            <template #append>
+                                <el-select v-model="inputForm.pvComNumberCurrency" placeholder="Chọn"
+                                    style="width: 80px">
+                                    <el-option v-for="item in currencyList" :key="item" :label="item" :value="item" />
+                                </el-select>
+                            </template>
+                        </el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="12">
                     <el-form-item label="Theo phần trăm" prop="pvComPercent">
-                        <el-input type="number" v-model="inputForm.pvComPercent" />
+                        <el-input type="number" v-model="inputForm.pvComPercent" >
+                            <template #append>
+                                %
+                            </template>
+                        </el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
             <el-row :gutter="20">
                 <el-col :span="12">
                     <el-form-item label="Tối thiểu" prop="pvComMin">
-                        <el-input type="number" v-model="inputForm.pvComMin" />
+                        <el-input type="number" v-model="inputForm.pvComMin">
+                            <template #append>
+                                <el-select v-model="inputForm.pvComMinCurrency" placeholder="Chọn" style="width: 80px">
+                                    <el-option v-for="item in currencyList" :key="item" :label="item" :value="item" />
+                                </el-select>
+                            </template>
+                        </el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="12">
                     <el-form-item label="Tối đa" prop="pvComMax">
-                        <el-input type="number" v-model="inputForm.pvComMax" />
+                        <el-input type="number" v-model="inputForm.pvComMax">
+                            <template #append>
+                                <el-select v-model="inputForm.pvComMaxCurrency" placeholder="Chọn" style="width: 80px">
+                                    <el-option v-for="item in currencyList" :key="item" :label="item" :value="item" />
+                                </el-select>
+                            </template>
+                        </el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
 
-            <div style="font-weight: bold">2. Phí ngân hàng nước ngoài/ngân hàng đại lý thu (Theo loại tiền đã chọn)
+            <div style="font-weight: bold">2. Phí ngân hàng nước ngoài/ngân hàng đại lý thu
             </div>
             <br />
             <el-row :gutter="20">
                 <el-col :span="12">
                     <el-form-item label="Theo số tiền" prop="moneyNumber">
-                        <el-input type="number" v-model="inputForm.moneyNumber" />
+                        <el-input type="number" v-model="inputForm.moneyNumber">
+                            <template #append>
+                                <el-select v-model="inputForm.moneyNumberCurrency" placeholder="Chọn"
+                                    style="width: 80px">
+                                    <el-option v-for="item in currencyList" :key="item" :label="item" :value="item" />
+                                </el-select>
+                            </template>
+                        </el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="12">
                     <el-form-item label="Theo phần trăm" prop="moneyPercent">
-                        <el-input type="number" v-model="inputForm.moneyPercent" />
+                        <el-input type="number" v-model="inputForm.moneyPercent" >
+                            <template #append>
+                                %
+                            </template>
+                        </el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
             <el-row :gutter="20">
                 <el-col :span="12">
                     <el-form-item label="Tối thiểu" prop="moneyMin">
-                        <el-input type="number" v-model="inputForm.moneyMin" />
+                        <el-input type="number" v-model="inputForm.moneyMin">
+                            <template #append>
+                                <el-select v-model="inputForm.moneyMinCurrency" placeholder="Chọn" style="width: 80px">
+                                    <el-option v-for="item in currencyList" :key="item" :label="item" :value="item" />
+                                </el-select>
+                            </template>
+                        </el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="12">
                     <el-form-item label="Tối đa" prop="moneyMax">
-                        <el-input type="number" v-model="inputForm.moneyMax" />
+                        <el-input type="number" v-model="inputForm.moneyMax">
+                            <template #append>
+                                <el-select v-model="inputForm.moneyMaxCurrency" placeholder="Chọn" style="width: 80px">
+                                    <el-option v-for="item in currencyList" :key="item" :label="item" :value="item" />
+                                </el-select>
+                            </template>
+                        </el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
 
-            <div style="font-weight: bold">3. Điện phí (USD)</div>
+            <div style="font-weight: bold">3. Điện phí</div>
             <br />
             <el-row :gutter="20">
                 <el-col :span="12">
                     <el-form-item label="Theo số tiền" prop="electricNumber">
-                        <el-input type="number" v-model="inputForm.electricNumber" />
+                        <el-input type="number" v-model="inputForm.electricNumber">
+                            <template #append>
+                                <el-select v-model="inputForm.electricNumberCurrency" placeholder="Chọn"
+                                    style="width: 80px">
+                                    <el-option label="USD" value="USD" />
+                                </el-select>
+                            </template>
+                        </el-input>
                     </el-form-item>
                 </el-col>
-                <el-col :span="12">
+                <!-- <el-col :span="12">
                     <el-form-item label="Theo phần trăm" prop="electricPercent">
                         <el-input type="number" v-model="inputForm.electricPercent" />
                     </el-form-item>
-                </el-col>
+                </el-col> -->
             </el-row>
-            <el-row :gutter="20">
+            <!-- <el-row :gutter="20">
                 <el-col :span="12">
                     <el-form-item label="Tối thiểu" prop="electricMin">
                         <el-input type="number" v-model="inputForm.electricMin" />
@@ -114,7 +168,7 @@
                         <el-input type="number" v-model="inputForm.electricMax" />
                     </el-form-item>
                 </el-col>
-            </el-row>
+            </el-row> -->
         </el-form>
         <template #footer>
             <span class="dialog-footer">
@@ -136,6 +190,7 @@ const dialogVisible = ref(false);
 const loaddingButton = ref(false);
 const currencyTypeBriefList = ref<NameObject[]>([])
 const currencySelect = ref()
+const currencyList = ref<string[]>([])
 interface NameObject {
     id: "",
     name: "",
@@ -148,16 +203,23 @@ const inputForm = ref({
     status: String(),
 
     pvComNumber: "",
+    pvComNumberCurrency: "",
     pvComPercent: "",
     pvComMin: "",
+    pvComMinCurrency: "",
     pvComMax: "",
+    pvComMaxCurrency: "",
 
     moneyNumber: "",
+    moneyNumberCurrency: "",
     moneyPercent: "",
     moneyMin: "",
+    moneyMinCurrency: "",
     moneyMax: "",
+    moneyMaxCurrency: "",
 
     electricNumber: "",
+    electricNumberCurrency: "USD",
     electricPercent: "",
     electricMin: "",
     electricMax: "",
@@ -181,12 +243,29 @@ function closeMethod() {
 
 }
 function resetForm() {
+    resetCurrencySelect()
     let formEl = formRef.value;
     if (!formEl) return
     formEl.resetFields()
 }
-function changeCurrencyMethod() {
+function changeCurrencyMethod(reset: boolean) {
     currencySelect.value = currencyTypeBriefList.value.filter(a => a.id == inputForm.value.currencyId)[0].name
+    if (reset) {
+        resetCurrencySelect()
+    }
+    currencyList.value.push(currencySelect.value)
+    if (currencySelect.value != "USD") {
+        currencyList.value.push("USD")
+    }
+}
+function resetCurrencySelect() {
+    currencyList.value = []
+    inputForm.value.pvComNumberCurrency = ""
+    inputForm.value.pvComMinCurrency = ""
+    inputForm.value.pvComMaxCurrency = ""
+    inputForm.value.moneyNumberCurrency = ""
+    inputForm.value.moneyMinCurrency = ""
+    inputForm.value.moneyMaxCurrency = ""
 }
 function submitForm() {
     let formEl = formRef.value;
@@ -217,7 +296,7 @@ function submitForm() {
 function getCurrencyTypeBriefList() {
     httpbe.get(`/currency-type/other`).then((resp) => {
         currencyTypeBriefList.value = resp.data.payload;
-        changeCurrencyMethod()
+        changeCurrencyMethod(false)
     })
 }
 function initialMethod(row: any) {

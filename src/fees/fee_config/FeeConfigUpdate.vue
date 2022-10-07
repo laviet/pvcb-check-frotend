@@ -43,8 +43,8 @@
             <el-form-item label="Điện phí" prop="electricType">
                 <el-radio-group v-model="inputForm.electricType">
                     <el-radio label="TYPE_FIXED">Theo số tiền cố định</el-radio>
-                    <el-radio label="TYPE_PERCENT">Theo phần trăm </el-radio>
-                    <el-radio label="TYPE_MIXED">Hỗn hợp cả hai</el-radio>
+                    <!-- <el-radio label="TYPE_PERCENT">Theo phần trăm </el-radio> -->
+                    <!-- <el-radio label="TYPE_MIXED">Hỗn hợp cả hai</el-radio> -->
                 </el-radio-group>
             </el-form-item>
         </el-form>
@@ -88,7 +88,7 @@ const inputForm = ref({
 
     pvComType: "",
     moneyType: "",
-    electricType: "",
+    electricType: "TYPE_FIXED",
 })
 const rulesData = reactive<FormRules>({
     name: [{ required: true, message: "Thông tin không được để trống", trigger: 'change' }],
