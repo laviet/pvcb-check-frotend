@@ -184,11 +184,16 @@ async function getPartnerConfigById(id: string) {
     })
 }
 function getFeeScheduleCurrency(reset: boolean) {
-    if (reset) {
-        inputForm.value.feeConfigIdList = []
-    }
     httpbe.get(`/fee-config/currency/?currencyIdList=${inputForm.value.currencyTypeIdList}`).then((resp) => {
         feeConfigBriefList.value = resp.data.payload;
+        if (reset) {
+        let idFeeList= inputForm.value.feeConfigIdList;
+        let idFeeNewList= feeConfigBriefList.value.map(x=>x.id);
+        inputForm.value.feeConfigIdList = idFeeList.filter(x=>{
+            let count=idFeeNewList.filter(a=>a==x).length;
+            return count>0
+        })
+    }
     })
 }
 function getPartnerListMethod() {
