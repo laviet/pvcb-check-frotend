@@ -4,6 +4,8 @@ const apiClient: AxiosInstance = axios.create({
   baseURL: "http://10.1.136.185:1234/",
   headers: {
     "Content-type": "application/json",
+    "company": "VN0010001",
+    "x-fapi-interaction-id": "123456",
   },
 });
 apiClient.interceptors.request.use(function (config) {

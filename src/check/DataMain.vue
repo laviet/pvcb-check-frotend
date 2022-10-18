@@ -45,7 +45,8 @@
         </span>
         <span style="float: right"></span>
     </div>
-    <el-table :data="tableDataFilter" :row-class-name="tableRowClassName">
+    <el-table :data="tableDataFilter" :row-class-name="tableRowClassName" :max-height="hightTable">
+        <el-table-column type="index" label="STT" width="55"/>
         <el-table-column width="180">
             <template #header>
                 <div>MÃ YÊU CẦU</div>
@@ -54,8 +55,8 @@
             </template>
             <template #default="scope">
                 <div class="bold-class">{{ scope.row.code }}</div>
-                <div class="bold-class">{{ scope.row.createdUser }}</div>
-                <div>{{ scope.row.targetTransferLabel }}</div>
+                <div class="bold-class">{{ scope.row.fullNameSend }}</div>
+                <div>{{ scope.row.transferTargetChildName }}</div>
             </template>
         </el-table-column>
         <el-table-column width="150">
@@ -64,6 +65,7 @@
                 <div style="font-weight: normal">Số TKTT</div>
             </template>
             <template #default="scope">
+                <div class="bold-class">{{ scope.row.cif }}</div>
                 <span>{{ scope.row.accountNumber }}</span>
             </template>
         </el-table-column>
@@ -73,7 +75,8 @@
                 <div style="font-weight: normal">Email</div>
             </template>
             <template #default="scope">
-                <span>{{ scope.row.email }}</span>
+                <div class="bold-class">{{ scope.row.phoneSend }}</div>
+                <span>{{ scope.row.emailSend }}</span>
             </template>
         </el-table-column>
         <el-table-column width="150">
@@ -82,17 +85,19 @@
                 <div style="font-weight: normal">Quy đổi VNĐ</div>
             </template>
             <template #default="scope">
-                <div>{{ scope.row.money }} {{ scope.row.moneyType }}</div>
-                <div> {{ formatterCurrency.format(scope.row.moneyTransferVND) }}</div>
+                <div>{{ scope.row.moneyTransfer }} {{ scope.row.currency }}</div>
+                <div> {{ formatterCurrency.format(scope.row.moneyTransferConvert) }}</div>
             </template>
         </el-table-column>
-        <el-table-column width="150">
+        <el-table-column width="300">
             <template #header>
                 <div>HỒ SƠ ĐÃ NỘP</div>
             </template>
-            <!-- <template #default="scope">
-                <span>{{ scope.row.name }}</span>
-            </template> -->
+            <template #default="scope">
+                <span v-for="(item, index) in scope.row.transferInfoFileList" :key="item.name">
+                    {{ index + 1 }}. {{ item.note }}<br />
+                </span>
+            </template>
         </el-table-column>
         <el-table-column width="200">
             <template #header>
@@ -102,20 +107,21 @@
                 <div v-if="scope.row.status == 'APPROVE_WAIT'" class="bold-class" style="color: green">CHỜ DUYỆT</div>
                 <div v-else-if="scope.row.status == 'APPROVED'" class="bold-class">ĐÃ DUYỆT</div>
                 <div v-else-if="scope.row.status == 'REJECT'" class="bold-class" style="color: red">TỪ CHỐI</div>
+                <div>{{scope.row.rejectReason}}</div>
+                <div>{{formatDateTime(scope.row.approvedTime)}}</div>
             </template>
         </el-table-column>
-        <el-table-column prop="date" label="USER
-            HẬU KIỂM" width="150">
+        <el-table-column prop="approvedUser" label="USER HẬU KIỂM" width="150">
         </el-table-column>
         <el-table-column width="150">
             <template #header>
                 <div>TÌNH TRẠNG GIAO DỊCH</div>
             </template>
-            <template #default="scope">
+            <!-- <template #default="scope">
                 <span v-if="scope.row.approvedTime!=null">{{ formatDateTime(scope.row.approvedTime) }}</span>
-            </template>
+            </template> -->
         </el-table-column>
-        <el-table-column label="Thao tác" fixed="right" width="120">
+        <el-table-column label="Thao tác" fixed="right" width="100">
             <template #default="scope">
                 <el-button link type="primary" size="small" @click="handleClick(scope.row.id)">Chi tiết
                 </el-button>
@@ -132,6 +138,7 @@ import router from "@/router";
 import { reactive, ref, onMounted, watch, toRefs, vModelRadio } from "vue";
 import { Search } from '@element-plus/icons-vue'
 import { useRoute } from "vue-router";
+import { hightTable } from "@/functionCommon/DataConstant"
 import { testFunction, formatDateTime } from "@/check/interface/CommonFunction"
 import httpbe from "@/http-be";
 
@@ -277,6 +284,12 @@ interface DataRes {
     email: string,
     status: string
     createdDate: Date
+    transferInfoFileList: Array<FileObject>
+}
+interface FileObject {
+    name: string,
+    note: string,
+    path: string
 }
 const tableData = ref<Array<DataRes>>([])
 const tableDataFilter = ref<Array<DataRes>>([])
