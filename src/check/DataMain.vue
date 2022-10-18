@@ -117,9 +117,10 @@
             <template #header>
                 <div>TÌNH TRẠNG GIAO DỊCH</div>
             </template>
-            <!-- <template #default="scope">
-                <span v-if="scope.row.approvedTime!=null">{{ formatDateTime(scope.row.approvedTime) }}</span>
-            </template> -->
+            <template #default="scope">
+                <div v-if="scope.row.FXTime!=null">{{formatDateTime(scope.row.FXTime)}} FX</div>
+                <div  v-if="scope.row.TFTime!=null">{{formatDateTime(scope.row.TFTime)}} MT103</div>
+            </template>
         </el-table-column>
         <el-table-column label="Thao tác" fixed="right" width="100">
             <template #default="scope">
@@ -172,6 +173,36 @@ interface User {
     date: string
     name: string
     address: string
+}
+interface DataRes {
+    id: string,
+    code: string,
+    money: number;
+    accountNumber: string,
+    targetTransfer: string,
+    objectTransfer: string,
+    moneyType: string,
+    balance: number,
+    rate: number,
+    rateUSD: number,
+    internalFees: string,
+    externalFees: string,
+    moneyShow: number,
+    moneyPay: number,
+    moneyTypeChoose: string,
+
+    createdUser: string,
+    email: string,
+    status: string
+    createdDate: Date
+    FXTime: Date
+    TFTime: Date
+    transferInfoFileList: Array<FileObject>
+}
+interface FileObject {
+    name: string,
+    note: string,
+    path: string
 }
 const tableRowClassName = ({
     row,
@@ -263,34 +294,7 @@ const formatterCurrency = new Intl.NumberFormat("de-DE", {
     minimumFractionDigits: 0,
 });
 
-interface DataRes {
-    id: string,
-    code: string,
-    money: number;
-    accountNumber: string,
-    targetTransfer: string,
-    objectTransfer: string,
-    moneyType: string,
-    balance: number,
-    rate: number,
-    rateUSD: number,
-    internalFees: string,
-    externalFees: string,
-    moneyShow: number,
-    moneyPay: number,
-    moneyTypeChoose: string,
 
-    createdUser: string,
-    email: string,
-    status: string
-    createdDate: Date
-    transferInfoFileList: Array<FileObject>
-}
-interface FileObject {
-    name: string,
-    note: string,
-    path: string
-}
 const tableData = ref<Array<DataRes>>([])
 const tableDataFilter = ref<Array<DataRes>>([])
 function filterDataMethod(resetPage: boolean) {
