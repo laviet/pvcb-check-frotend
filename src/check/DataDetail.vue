@@ -237,8 +237,13 @@
             </el-button>
         </div>
         <div v-else style="text-align: center;">
-            <el-button v-if="inputForm.status == 'APPROVED'" type="text" style="color: green; font-weight: bold;">ĐÃ DUYỆT
-            </el-button>
+            <span v-if="inputForm.status == 'APPROVED'">
+                <el-button type="text" style="color: green; font-weight: bold;">ĐÃ DUYỆT</el-button>
+            <div>{{formatDateTime(inputForm.approvedTime)}}</div>
+            <div v-if="inputForm.fxTime!=null">{{formatDateTime(inputForm.fxTime)}} FX</div>
+            <div v-if="inputForm.ftTime!=null">{{formatDateTime(inputForm.ftTime)}} MT103</div>
+            </span>
+
             <el-button v-if="inputForm.status == 'REJECT'" type="text" style="color: red; font-weight: bold;">ĐÃ TỪ CHỐI
             </el-button>
         </div>
@@ -280,6 +285,7 @@ import { reactive, ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import type { FormInstance, FormRules, UploadProps, UploadUserFile } from "element-plus";
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { formatDateTime } from "@/check/interface/CommonFunction"
 import httpbe from "@/http-be";
 // import pdf from 'vue-pdf';
 import VuePdfEmbed from 'vue-pdf-embed'
@@ -363,6 +369,11 @@ const inputForm = ref({
     status: "",
     rejectReason: "",
     checkData: null,
+    approvedTime: Date,
+    fxTime: Date,
+    ftTime: Date,
+    resultfx: "",
+    resultft: "",
 
     transferInfoFileList: Array<FileObject>()
 });

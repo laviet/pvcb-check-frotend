@@ -46,7 +46,7 @@
         <span style="float: right"></span>
     </div>
     <el-table :data="tableDataFilter" :row-class-name="tableRowClassName" :max-height="hightTable">
-        <el-table-column type="index" label="STT" width="55"/>
+        <el-table-column type="index" label="STT" width="55" />
         <el-table-column width="180">
             <template #header>
                 <div>MÃ YÊU CẦU</div>
@@ -113,13 +113,13 @@
         </el-table-column>
         <el-table-column prop="approvedUser" label="USER HẬU KIỂM" width="150">
         </el-table-column>
-        <el-table-column width="150">
+        <el-table-column width="200">
             <template #header>
                 <div>TÌNH TRẠNG GIAO DỊCH</div>
             </template>
             <template #default="scope">
-                <div v-if="scope.row.FXTime!=null">{{formatDateTime(scope.row.FXTime)}} FX</div>
-                <div  v-if="scope.row.TFTime!=null">{{formatDateTime(scope.row.TFTime)}} MT103</div>
+                <div v-if="scope.row.fxTime!=null">{{formatDateTime(scope.row.fxTime)}} FX</div>
+                <div v-if="scope.row.ftTime!=null">{{formatDateTime(scope.row.ftTime)}} MT103</div>
             </template>
         </el-table-column>
         <el-table-column label="Thao tác" fixed="right" width="100">
@@ -193,10 +193,10 @@ interface DataRes {
 
     createdUser: string,
     email: string,
-    status: string
-    createdDate: Date
-    FXTime: Date
-    TFTime: Date
+    status: string,
+    approvedTime: Date,
+    fxTime: Date,
+    ftTime: Date,
     transferInfoFileList: Array<FileObject>
 }
 interface FileObject {
@@ -325,6 +325,7 @@ function filterDataMethod(resetPage: boolean) {
 function getDataInitial() {
     httpbe.get("/check/list").then((resp) => {
         let list = resp.data.payload
+        console.log(list)
         tableData.value = list;
         totalPage.value = list.length
         filterDataMethod(false)
