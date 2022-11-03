@@ -1,7 +1,8 @@
 import axios, { AxiosInstance } from "axios";
 import authHeader from '@/check/interface/Authentication';
 const apiClient: AxiosInstance = axios.create({
-  baseURL: "http://10.1.136.185:1212/",
+  // baseURL: "http://10.1.136.185:1212/",
+  baseURL: "https://fees-api-app-nhs-digitech.apps.ocp4-dev03.pvcomtestocp.com/",
   headers: {
     "Content-type": "application/json",
   },
