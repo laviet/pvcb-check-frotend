@@ -106,29 +106,29 @@ function deleteClick(id: string) {
         })
 
 }
-function abc() {
-    let formData = new FormData();
-    formData.append("fullName", "la vanviet")
-    let objectTest = {
-        "age": "tuoi 19",
-        "address": "ha noi"
-    }
-    formData.append("objectTest.age", objectTest.age)
-    formData.append("objectTest.address", objectTest.address)
-    formData.append("objectFile.abc", "con chim")
-    let index = 0;
-    fileList1.value.forEach(x => {
-        formData.append("fileTestList[" + index + "].name", "ten " + index);
-        formData.append("fileTestList[" + index + "].file", x.raw);
-        index++;
-    })
+// function abc() {
+//     let formData = new FormData();
+//     formData.append("fullName", "la vanviet")
+//     let objectTest = {
+//         "age": "tuoi 19",
+//         "address": "ha noi"
+//     }
+//     formData.append("objectTest.age", objectTest.age)
+//     formData.append("objectTest.address", objectTest.address)
+//     formData.append("objectFile.abc", "con chim")
+//     let index = 0;
+//     fileList1.value.forEach(x => {
+//         formData.append("fileTestList[" + index + "].name", "ten " + index);
+//         formData.append("fileTestList[" + index + "].file", x.raw);
+//         index++;
+//     })
 
 
 
-    httpFile.post("/test/test-file", formData).then(resp => {
-        console.log(resp)
-    })
-}
+//     httpFile.post("/test/test-file", formData).then(resp => {
+//         console.log(resp)
+//     })
+// }
 function getDataInitial() {
     httpbe.get("/exchange-rate").then((resp) => {
         tableData.value = resp.data.payload;

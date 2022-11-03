@@ -10,6 +10,11 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import(/* webpackChunkName: "about" */ '@/components/HelloWorld.vue')
   },
   {
+    path: '/test',
+    name: "testName",
+    component: () => import('@/test/TestView.vue')
+  },
+  {
     path: '/login',
     name: 'loginName',
     component: () => import('@/login/LoginPage.vue')
@@ -123,7 +128,7 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('@/fees/fee_config/FeeConfig.vue')
       },
     ],
-  },
+  }
 ]
 
 const router = createRouter({

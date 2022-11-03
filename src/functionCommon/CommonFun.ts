@@ -24,6 +24,6 @@ export function formatNumber(value: number) {
 export const formarCurrencyPrintVND = new Intl.NumberFormat("de-DE", {
         style: "currency",
         currency: "VND",
-        minimumFractionDigits: 0,
+        minimumFractionDigits: 2,
 });
 

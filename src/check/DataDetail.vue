@@ -169,17 +169,17 @@
                             </el-form-item>
                             <el-form-item label="Tỷ giá ngoại tệ" prop="rate">
                                 <!-- <el-input v-model.number="inputForm.rate" readonly autocomplete="off" /> -->
-                                <span>{{ formatterCurrency.format(inputForm.rate) }}</span>
+                                <span>{{ formarCurrencyPrintVND.format(inputForm.rate) }}</span>
                             </el-form-item>
                             <el-form-item label="Số tiền muốn chuyển" prop="moneyTransferConvert">
-                                <span>{{ formatterCurrency.format(inputForm.moneyTransferConvert) }}</span>
+                                <span>{{ formarCurrencyPrintVND.format(inputForm.moneyTransferConvert) }}</span>
                             </el-form-item>
                             <el-form-item label="Tổng chi phí quy đổi" prop="moneyFee">
-                                <span>{{ formatterCurrency.format(inputForm.moneyFee) }}</span>
+                                <span>{{ formarCurrencyPrintVND.format(inputForm.moneyFee) }}</span>
                             </el-form-item>
-                            <el-form-item label="Tổng tiền cần thanh toán" prop="moneyTransferConvert">
+                            <el-form-item label="Tổng tiền cần thanh toán" prop="moneyTotal">
                                 <span style="font-weight: bold; color: red">{{
-                                formatterCurrency.format(inputForm.moneyTransferConvert)
+                                formarCurrencyPrintVND.format(inputForm.moneyTotal)
                                 }}</span>
                             </el-form-item>
                         </el-col>
@@ -239,9 +239,16 @@
         <div v-else style="text-align: center;">
             <span v-if="inputForm.status == 'APPROVED'">
                 <el-button type="text" style="color: green; font-weight: bold;">ĐÃ DUYỆT</el-button>
-            <div>{{formatDateTime(inputForm.approvedTime)}}</div>
-            <div v-if="inputForm.fxTime!=null">{{formatDateTime(inputForm.fxTime)}} FX</div>
-            <div v-if="inputForm.ftTime!=null">{{formatDateTime(inputForm.ftTime)}} MT103</div>
+                <div>{{formatDateTime(inputForm.approvedTime)}}</div>
+                <br/>
+                <div v-if="inputForm.fxTime!=null">{{formatDateTime(inputForm.fxTime)}} FX
+                    <el-button @click="dialogVisible1=true" type="text" style="color: green;"><u>Xem kết
+                            quả</u></el-button>
+                </div>
+                <div v-if="inputForm.ftTime!=null">{{formatDateTime(inputForm.ftTime)}} MT103
+                    <el-button @click="dialogVisible2=true" type="text" style="color: green;"><u>Xem kết
+                            quả</u></el-button>
+                </div>
             </span>
 
             <el-button v-if="inputForm.status == 'REJECT'" type="text" style="color: red; font-weight: bold;">ĐÃ TỪ CHỐI
@@ -278,6 +285,22 @@
             </div>
         </el-collapse-item>
     </el-collapse> -->
+    <el-dialog v-model="dialogVisible1" title="Kết quả bán ngoại tệ" width="45%">
+        <span>{{inputForm.resultfx}}</span>
+        <template #footer>
+            <span class="dialog-footer">
+                <el-button type="primary" @click="dialogVisible1 = false">Đóng</el-button>
+            </span>
+        </template>
+    </el-dialog>
+    <el-dialog v-model="dialogVisible2" title="Kết quả lập lệnh" width="60%">
+        <span>{{inputForm.resultft}}</span>
+        <template #footer>
+            <span class="dialog-footer">
+                <el-button type="primary" @click="dialogVisible2 = false">Đóng</el-button>
+            </span>
+        </template>
+    </el-dialog>
 </template>
 <script lang="ts" setup>
 import router from "@/router";
@@ -287,6 +310,7 @@ import type { FormInstance, FormRules, UploadProps, UploadUserFile } from "eleme
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { formatDateTime } from "@/check/interface/CommonFunction"
 import httpbe from "@/http-be";
+import { formarCurrencyPrintVND } from "@/functionCommon/CommonFun"
 // import pdf from 'vue-pdf';
 import VuePdfEmbed from 'vue-pdf-embed'
 const route = useRoute();
@@ -379,17 +403,14 @@ const inputForm = ref({
 });
 const dialogImageUrl = ref('')
 const dialogVisible = ref(false)
+const dialogVisible1 = ref(false)
+const dialogVisible2 = ref(false)
 const expandDialogVisible = ref(false)
 
 // const handleRemove: UploadProps['onRemove'] = (uploadFile, uploadFiles) => {
 //     console.log(uploadFile, uploadFiles)
 // }
 
-const formatterCurrency = new Intl.NumberFormat("de-DE", {
-    style: "currency",
-    currency: "VND",
-    minimumFractionDigits: 0,
-});
 const rulesData = reactive<FormRules>({
     check: [{ required: true, message: "Thông tin không được để trống" }]
 })
@@ -428,6 +449,7 @@ function approvedYesMethod() {
                 })
                 getDataInitial()
             }).catch(err => {
+                console.log(err.data.payload)
                 ElMessage.error({
                     message: err.data.message,
                 })
@@ -465,6 +487,9 @@ function approvedNoMethod() {
                 }, 500);
             })
         })
+}
+function showFTDataMethod() {
+    dialogVisible1.value = true
 }
 // function unlockAmountMethod() {
 //     let id = inputForm.value.idLockAmount;

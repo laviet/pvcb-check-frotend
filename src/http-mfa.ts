@@ -1,0 +1,19 @@
+import axios, { AxiosInstance } from "axios";
+import authHeader from '@/check/interface/Authentication';
+const apiClient: AxiosInstance = axios.create({
+  baseURL: "https://my-mfa-api-app-nhs-digitech.apps.ocp4-dev03.pvcomtestocp.com",
+  headers: {
+    "Content-type": "application/json",
+  },
+});
+
+apiClient.interceptors.request.use(function (config) {
+  const tokenA="eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJkeXE5S1BENUdocjJabERZN0VBSHVJMjEtQVFmZU5SbkdxQmF0Tmtldm9NIn0.eyJleHAiOjE2NjY3NTU5NjksImlhdCI6MTY2Njc1NTY2OSwiYXV0aF90aW1lIjoxNjY2NzUxNjYyLCJqdGkiOiJmODM2ZWMxMS0yNzJmLTQ5NDktYTM3Yi01MWQ1OTJmNDg3N2MiLCJpc3MiOiJodHRwczovL3NhbmRib3gtY29ubmVjdC5wdmNvbWJhbmsuY29tLnZuL2F1dGgvcmVhbG1zL3B2Y29tYmFuayIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiI4ZTc2YTZhOS1kNjJhLTQ3ZWMtYWM1NS1lYmI4YmZjNThkNDAiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJkaWdpYmFuayIsInNlc3Npb25fc3RhdGUiOiJmMDIyNDVjMS02YjFkLTRhNGQtYjJhNi03ZTBlNzQ1ZDY5ZWIiLCJhY3IiOiIwIiwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6Im9wZW5pZCBlbWFpbCBwcm9maWxlIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJuYW1lIjoiVHJhbiBUaGFuaCIsInByZWZlcnJlZF91c2VybmFtZSI6IjA3NjI3MDE3NzMiLCJnaXZlbl9uYW1lIjoiVHJhbiIsImZhbWlseV9uYW1lIjoiVGhhbmgiLCJlbWFpbCI6InRyYW5waHVvbmd0aGFuaDIwMTlAZ21haWwuY29tIn0.nH1l6E0TtqptjMt7ZCMb9Nf5-pQgAOsCjAxgK2HA8XALxFLTgi9IsYp13IwkKy-s1r_A-MAMXPxJ08k_5HExb5I-Kkff9IsxIde-fb9kDn4zMbNY6rEtKH0R8dVZ-k-MLfnCmhSCePEzWigMot7Y_wm-eU1jjsKtY4uxNv4TKPizm9a4La35Rsvh3uJcszRJmf7gtwNSJeNwseU2tQ8_UXRxnrpu2xiOS3yv_aJ2EodeittSoHQME3-EZt3P9rz0_urOSh05VBMSyoH3LNa9EQPvDrafG-9pMdQi3J_VVGixMxe_QgXZxCmuqnA0X0yeFvBnaOAZC3te8OwmqtoVrw";
+  const authKey = authHeader()
+  if (authKey != null && config.headers != undefined) {
+    // config.headers["Authorization"] = authKey.Authorization!;
+    config.headers["Authorization"] = tokenA;
+    return config;
+  }
+})
+export default apiClient;
