@@ -28,7 +28,7 @@ const routes: Array<RouteRecordRaw> = [
     path: '/',
     name: 'home',
     redirect: {
-      name: "registryName"
+      name: "transferTargetName"
     },
     component: HomeView
   },
