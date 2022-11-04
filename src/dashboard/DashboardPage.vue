@@ -4,8 +4,8 @@
 </template>
 
 <script lang="ts" setup>
-// import httpbe from "@/http-be";
-import httpbe from "@/http-fees";
+import httpbe from "@/http-be";
+// import httpbe from "@/http-fees";
 import { reactive, ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import router from "@/router";
@@ -26,8 +26,8 @@ function fetchData() {
         mydata.full_name = decoded.name;
         localStorage.setItem('userInfo', JSON.stringify(mydata));
         router.push({
-            // name: "listCheckName"
-            name: "transferTargetName"
+            name: "listCheckName"
+            // name: "transferTargetName"
         });
     }).catch(err => {
         console.log(err.data.message)

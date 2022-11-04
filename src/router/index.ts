@@ -28,7 +28,7 @@ const routes: Array<RouteRecordRaw> = [
     path: '/',
     name: 'home',
     redirect: {
-      name: "transferTargetName"
+      name: "listCheckName"
     },
     component: HomeView
   },
