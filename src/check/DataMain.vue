@@ -329,7 +329,9 @@ function getDataInitial() {
         tableData.value = list;
         totalPage.value = list.length
         filterDataMethod(false)
-    });
+    }).catch(err=>{
+        alert("loi roi: "+err.data.code)
+    })
 }
 function fetchData() {
     getDataInitial()

@@ -87,7 +87,6 @@ function collapseMethod() {
 }
 function logoutMethod() {
     localStorage.removeItem("userInfo")
-    // const redirectUri = "http://10.1.136.185:3001/login";
     const redirectUri = urlFEFees+"/login";
     window.location.href = `https://connect-internal.pvcb.vn/auth/realms/pvcombank-internal/protocol/openid-connect/logout?redirect_uri=${redirectUri}`;
 }
