@@ -1,6 +1,6 @@
 <template>
     <div style="text-align: center; margin-top: 50px">
-        Đăng nhập:
+        Đăng nhập tài khoản
         <el-button type="success" @click="loginPageMethod()">OK</el-button>
     </div>
 </template>

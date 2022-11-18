@@ -165,7 +165,7 @@
                         <!-- column 2 -->
                         <el-col :span="12">
                             <el-form-item label="Số tiền nhập" prop="moneyTransfer">
-                                <span>{{ inputForm.moneyTransfer }} {{inputForm.currency}}</span>
+                                <span>{{ inputForm.moneyTransfer }} {{ inputForm.currency }}</span>
                             </el-form-item>
                             <el-form-item label="Tỷ giá ngoại tệ" prop="rate">
                                 <!-- <el-input v-model.number="inputForm.rate" readonly autocomplete="off" /> -->
@@ -179,7 +179,7 @@
                             </el-form-item>
                             <el-form-item label="Tổng tiền cần thanh toán" prop="moneyTotal">
                                 <span style="font-weight: bold; color: red">{{
-                                formarCurrencyPrintVND.format(inputForm.moneyTotal)
+                                        formarCurrencyPrintVND.format(inputForm.moneyTotal)
                                 }}</span>
                             </el-form-item>
                         </el-col>
@@ -195,7 +195,7 @@
                 <h4>1. Kiểm tra định dạng các hồ sơ</h4>
                 <div v-for="item in inputForm.transferInfoFileList" :key="item.id">
                     <el-switch v-model="item.validStatus" /> &nbsp;
-                    <span>{{item.note}}</span>
+                    <span>{{ item.note }}</span>
                 </div>
                 <!-- <br /> -->
                 <!-- <el-input v-model="inputForm1.note1" placeholder="Ghi chú"></el-input> -->
@@ -239,14 +239,14 @@
         <div v-else style="text-align: center;">
             <span v-if="inputForm.status == 'APPROVED'">
                 <el-button type="text" style="color: green; font-weight: bold;">ĐÃ DUYỆT</el-button>
-                <div>{{formatDateTime(inputForm.approvedTime)}}</div>
-                <br/>
-                <div v-if="inputForm.fxTime!=null">{{formatDateTime(inputForm.fxTime)}} FX
-                    <el-button @click="dialogVisible1=true" type="text" style="color: green;"><u>Xem kết
+                <div>{{ formatDateTime(inputForm.approvedTime) }}</div>
+                <br />
+                <div v-if="inputForm.fxTime != null">{{ formatDateTime(inputForm.fxTime) }} FX
+                    <el-button @click="dialogVisible1 = true" type="text" style="color: green;"><u>Xem kết
                             quả</u></el-button>
                 </div>
-                <div v-if="inputForm.ftTime!=null">{{formatDateTime(inputForm.ftTime)}} MT103
-                    <el-button @click="dialogVisible2=true" type="text" style="color: green;"><u>Xem kết
+                <div v-if="inputForm.ftTime != null">{{ formatDateTime(inputForm.ftTime) }} MT103
+                    <el-button @click="dialogVisible2 = true" type="text" style="color: green;"><u>Xem kết
                             quả</u></el-button>
                 </div>
             </span>
@@ -286,7 +286,7 @@
         </el-collapse-item>
     </el-collapse> -->
     <el-dialog v-model="dialogVisible1" title="Kết quả bán ngoại tệ" width="45%">
-        <span>{{inputForm.resultfx}}</span>
+        <span>{{ inputForm.resultfx }}</span>
         <template #footer>
             <span class="dialog-footer">
                 <el-button type="primary" @click="dialogVisible1 = false">Đóng</el-button>
@@ -294,7 +294,7 @@
         </template>
     </el-dialog>
     <el-dialog v-model="dialogVisible2" title="Kết quả lập lệnh" width="60%">
-        <span>{{inputForm.resultft}}</span>
+        <span>{{ inputForm.resultft }}</span>
         <template #footer>
             <span class="dialog-footer">
                 <el-button type="primary" @click="dialogVisible2 = false">Đóng</el-button>
@@ -443,13 +443,14 @@ function approvedYesMethod() {
         }
     )
         .then(() => {
+            debugger
             httpbe.put(`/check/approved/yes`, inputForm.value).then((resp) => {
                 ElMessage.success({
                     message: resp.data.message,
                 })
                 getDataInitial()
             }).catch(err => {
-                console.log(err.data.payload)
+                console.log(err.data)
                 ElMessage.error({
                     message: err.data.message,
                 })
@@ -478,6 +479,7 @@ function approvedNoMethod() {
                 })
                 getDataInitial()
             }).catch(err => {
+                console.log(err.data)
                 ElMessage.error({
                     message: err.data.message,
                 })

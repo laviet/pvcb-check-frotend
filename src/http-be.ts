@@ -21,8 +21,10 @@ apiClient.interceptors.request.use(function (config) {
 })
 //thông tin trả về sau khi gọi api
 apiClient.interceptors.response.use(function (response) {
+  debugger
   return response;
 }, async function (error) {
+  debugger
   const status = error.response.status;
   const errorResponse = error.response.data;
   const originalConfig = error.config;
@@ -39,24 +41,27 @@ apiClient.interceptors.response.use(function (response) {
       const responseToken = await axios.get(urlBE + `keycloak/token/refresh?refreshToken=${refreshToken}`).then((resp) => {
         return resp;
       }).catch(err => {
+        debugger
         if (err.response.data.code == "11") {
+          alert("Phiên giao dịch đã hết hạn. Quý khách vui lòng đăng nhập lại.")
           localStorage.removeItem("userInfo")
           const redirectUri = urlFEFees + "/login";
           window.location.href = `https://connect-internal.pvcb.vn/auth/realms/pvcombank-internal/protocol/openid-connect/logout?redirect_uri=${redirectUri}`;
+        } else {
+          alert(error.response.data.message)
         }
-        alert("Phiên giao dịch đã hết hạn. Quý khách vui lòng đăng nhập lại.")
         throw null;
       })
       const mydata: TokenReponse = responseToken.data.payload;
       localStorage.setItem('userInfo', JSON.stringify(mydata));
       return apiClient(originalConfig);
     }
-    Promise.reject(error.response)
+    throw error.response;
   }
   else if (status == 404) {
     alert("Đường dẫn không tồn tại: " + error.config.url)
-    Promise.reject(error.response)
+    throw error.response;
   }
-  Promise.reject(error.response)
+  throw error.response;
 })
 export default apiClient;
